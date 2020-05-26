@@ -61,6 +61,7 @@ import { Circle } from "./layers/circle"
 import { Cluster } from "./layers/cluster"
 import { Heatmap } from "./layers/heatmap"
 import { Raster } from "./layers/raster"
+import { Symbol } from "./layers/symbol"
 import { Choropleth } from "./layers/choropleth"
 
 export class MapboxMap implements IVisual {
@@ -190,6 +191,7 @@ export class MapboxMap implements IVisual {
         }))
         this.layers.push(new Choropleth(this, this.filter, this.palette));
         this.layers.push(new Circle(this, this.filter, this.palette));
+        this.layers.push(new Symbol(this, this.filter, this.palette));
 
         // @ts-ignore
         mapboxgl.config.API_URL = this.settings.api.apiUrl;

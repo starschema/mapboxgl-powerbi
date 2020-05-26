@@ -1631,6 +1631,51 @@
             }
           }
         },
+        "symbol": {
+          "displayName": "Symbol",
+          "displayNameKey": "symbol",
+          "description": "Symbol layer display settings",
+          "properties": {
+            "show": {
+              "displayName": "Symbol",
+              "type": {
+                "bool": true
+              }
+            },
+            "url": {
+              "displayName": "URL",
+              "displayNameKey": "url",
+              "description": "The image to use for the symbol",
+              "type": {
+                "text": true
+              }
+            },
+            "opacity": {
+              "displayName": "Opacity",
+              "displayNameKey": "opacity",
+              "description": "The global opacity in percentage at which the layer will be drawn.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "minZoom": {
+              "displayName": "Min Zoom",
+              "displayNameKey": "minZoom",
+              "description": "Minimum zoom level layer is visibile at.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "maxZoom": {
+              "displayName": "Max Zoom",
+              "displayNameKey": "maxZoom",
+              "description": "Maximum zoom level layer is visibile at.",
+              "type": {
+                "numeric": true
+              }
+            }
+          }
+        },
         "colorSelector": {
           "displayName": "Data Colors",
           "properties": {

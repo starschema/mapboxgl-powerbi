@@ -38,6 +38,7 @@ export class MapboxSettings extends DataViewObjectsParser {
         public circle: CircleSettings = new CircleSettings();
         public choropleth: ChoroplethSettings = new ChoroplethSettings();
         public raster: RasterSettings = new RasterSettings();
+        public symbol: SymbolSettings = new SymbolSettings();
 
         public static enumerateObjectInstances(
             dataViewObjectParser: DataViewObjectsParser,
@@ -422,6 +423,14 @@ export class RasterSettings {
     public show: boolean = false;
     public url: string = "https://geodata.state.nj.us/imagerywms/Natural2015?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=Natural2015";
     public rasterTileSize: number = 256;
+    public opacity: number = 80;
+    public minZoom: number = 0;
+    public maxZoom: number = 22;
+}
+
+export class SymbolSettings {
+    public show: boolean = false;
+    public url: string = ""
     public opacity: number = 80;
     public minZoom: number = 0;
     public maxZoom: number = 22;
