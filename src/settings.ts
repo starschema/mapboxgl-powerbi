@@ -50,6 +50,7 @@ export class MapboxSettings extends DataViewObjectsParser {
             switch (options.objectName) {
                 case 'api':
                 case 'circle':
+                case 'symbol':
                 case 'choropleth': {
                     return settings[options.objectName].enumerateObjectInstances(instanceEnumeration);
                 }
@@ -430,8 +431,33 @@ export class RasterSettings {
 
 export class SymbolSettings {
     public show: boolean = false;
-    public url: string = ""
+    public url: string = "";
+    public sdf: boolean = true;
     public opacity: number = 80;
+    public size: number = 30;
+    public scaleFactor: number = 2;
+    public allowOverlap: boolean = true;
+    public diverging: boolean = false;
+    public minColor: string = "#ffffcc";
+    public midColor: string = "#41b6c4";
+    public maxColor: string = "#253494";
+    public minValue: number = null;
+    public midValue: number = null;
+    public maxValue: number = null;
     public minZoom: number = 0;
     public maxZoom: number = 22;
+    public legend: boolean = true;
+
+    public enumerateObjectInstances(objectEnumeration) {
+        let instances = objectEnumeration.instances;
+        let properties = instances[0].properties;
+        // Hide / show center color according to diverging property
+        if (!properties.diverging) {
+            delete properties.midColor;
+            delete properties.minValue;
+            delete properties.midValue;
+            delete properties.maxValue;
+        }
+        return { instances }
+    }
 }

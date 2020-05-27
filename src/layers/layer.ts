@@ -8,7 +8,7 @@ import * as chroma from "chroma-js"
 import { ClassificationMethod, filterValues, getBreaks, getClassCount, Limits } from "../mapboxUtils"
 import { RoleMap } from "../roleMap"
 import { ColorStops, LegendControl } from "../legendControl"
-import { MapboxSettings, CircleSettings, ChoroplethSettings, ClusterSettings } from "../settings"
+import { MapboxSettings, CircleSettings, ChoroplethSettings, ClusterSettings, SymbolSettings } from "../settings"
 import { Palette } from "../palette"
 import { TooltipEventArgs } from "../tooltipServiceWrapper"
 import { MapboxMap } from "../visual"
@@ -80,7 +80,7 @@ export abstract class Layer {
         });
     }
 
-    generateColorStops(settings: CircleSettings | ChoroplethSettings | ClusterSettings, isGradient: boolean, colorLimits: Limits, colorPalette: Palette): ColorStops {
+    generateColorStops(settings: CircleSettings | ChoroplethSettings | ClusterSettings | SymbolSettings, isGradient: boolean, colorLimits: Limits, colorPalette: Palette): ColorStops {
         if (!isGradient) {
             return colorLimits.values.map(value => {
                 const colorStop = value.toString();

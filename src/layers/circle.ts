@@ -1,5 +1,5 @@
 import powerbiVisualsApi from "powerbi-visuals-api";
-import { ClassificationMethod, Limits, decorateLayer, shouldUseGradient, getClassCount, getBreaks } from "../mapboxUtils"
+import { ClassificationMethod, Limits, decorateLayer, shouldUseGradient, getClassCount, getBreaks, getSizes, getColorStyle } from "../mapboxUtils"
 import { Palette } from "../palette"
 import { Filter } from "../filter"
 import { RoleMap } from "../roleMap"
@@ -135,10 +135,10 @@ export class Circle extends Layer {
         if (settings.circle.show) {
             const isGradient = shouldUseGradient(roleMap.getColumn('color', Circle.ID));
             const limits = this.source.getLimits()
-            const sizes = Circle.getSizes(limits.size, map, settings, roleMap.size());
+            const sizes = getSizes(limits.size, map, settings.circle.radius, settings.circle.scaleFactor, roleMap.size());
 
             this.colorStops = this.generateColorStops(settings.circle, isGradient, limits.color, this.palette)
-            let colorStyle = Circle.getColorStyle(isGradient, settings, roleMap.color(this), this.colorStops);
+            let colorStyle = getColorStyle(isGradient, settings.circle, roleMap.color(this), this.colorStops);
 
             map.setPaintProperty(Circle.ID, 'circle-radius', sizes);
             map.setPaintProperty(Circle.HighlightID, 'circle-radius', sizes);
@@ -170,60 +170,5 @@ export class Circle extends Layer {
         return settings.circle.legend && roleMap.color(this) && super.showLegend(settings, roleMap)
     }
 
-    private static getColorStyle(isGradient: boolean, settings: MapboxSettings, colorField: string, colorStops: ColorStops) {
-        if (colorField === '') {
-            return settings.circle.minColor;
-        }
 
-        if (isGradient) {
-            // Set colors for continuous value
-            const continuousStyle: any = ["interpolate", ["linear"], ["to-number", ['get', colorField]]]
-            colorStops.forEach(({colorStop, color}) => {
-                continuousStyle.push(colorStop);
-                continuousStyle.push(color);
-            });
-
-            return continuousStyle;
-        }
-
-        // Set colors for categorical value
-        let categoricalStyle: any = ['match', ['to-string', ['get', colorField]]];
-        colorStops.forEach(({colorStop, color}) => {
-            categoricalStyle.push(colorStop);
-            categoricalStyle.push(color);
-        });
-
-        // Add transparent as default so that we only see regions
-        // for which we have data values
-        categoricalStyle.push('rgba(255,0,0,255)');
-
-        return categoricalStyle;
-    }
-
-    private static getSizes(sizeLimits: Limits, map: any, settings: any, sizeField: string) {
-        if (sizeField !== '' && sizeLimits && sizeLimits.min != null && sizeLimits.max != null && sizeLimits.min != sizeLimits.max) {
-            const style: any[] = [
-                "interpolate", ["linear"],
-                ["to-number", ['get', sizeField]]
-            ]
-
-            const classCount = getClassCount(sizeLimits.values);
-            const sizeStops: any[] = getBreaks(sizeLimits.values, ClassificationMethod.Quantile, classCount);
-            const sizeDelta = (settings.circle.radius * settings.circle.scaleFactor - settings.circle.radius) / classCount
-
-            sizeStops.map((sizeStop, index) => {
-                const size = settings.circle.radius + index * sizeDelta
-                style.push(sizeStop);
-                style.push(size);
-            });
-            return style;
-        }
-        else {
-            return [
-                'interpolate', ['linear'], ['zoom'],
-                0, settings.circle.radius,
-                18, settings.circle.radius * settings.circle.scaleFactor
-            ];
-        }
-    }
 }

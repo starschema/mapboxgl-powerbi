@@ -1650,10 +1650,108 @@
                 "text": true
               }
             },
+            "sdf": {
+              "displayName": "SDF",
+              "displayNameKey": "Single Distance Fields",
+              "description": "Single color transparent background images can be colored based on data and settings",
+              "type": {
+                "bool": true
+              }
+            },
             "opacity": {
               "displayName": "Opacity",
               "displayNameKey": "opacity",
               "description": "The global opacity in percentage at which the layer will be drawn.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "allowOverlap": {
+              "displayName": "Overlap",
+              "description": "Allow overlaping symbols",
+              "type": {
+                "bool": true
+              }
+            },
+            "diverging": {
+              "displayName": "Diverging",
+              "description": "Diverge colors by value",
+              "type": {
+                "bool": true
+              }
+            },
+            "size": {
+              "displayName": "Size",
+              "displayNameKey": "size",
+              "description": "Size in percentage of the symbols",
+              "type": {
+                "numeric": true
+              }
+            },
+            "scaleFactor": {
+              "displayName": "Zoom scale factor",
+              "displayNameKey": "scaleFactor",
+              "description": "The scale factor to use when sizing symbols relative to zoom level.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "minColor": {
+              "displayName": "Minimum",
+              "displayNameKey": "minColor",
+              "description": "Defines the color for the minimum value of the color field.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "midColor": {
+              "displayName": "Center",
+              "displayNameKey": "midColor",
+              "description": "Defines the color for the center value of the color field.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "maxColor": {
+              "displayName": "Maximum",
+              "displayNameKey": "maxColor",
+              "description": "Defines the color for the maximum value of the color field.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "minValue": {
+              "displayName": "Minimum",
+              "displayNameKey": "minValue",
+              "description": "Minimum value to consider for colors",
+              "type": {
+                "numeric": true
+              }
+            },
+            "midValue": {
+              "displayName": "Center",
+              "displayNameKey": "midValue",
+              "description": "Center value to consider for colors",
+              "type": {
+                "numeric": true
+              }
+            },
+            "maxValue": {
+              "displayName": "Maximum",
+              "displayNameKey": "maxValue",
+              "description": "Maximum value to consider for colors",
               "type": {
                 "numeric": true
               }
@@ -1672,6 +1770,14 @@
               "description": "Maximum zoom level layer is visibile at.",
               "type": {
                 "numeric": true
+              }
+            },
+            "legend": {
+              "displayName": "Legend",
+              "displayNameKey": "legend",
+              "description": "Enable legend",
+              "type": {
+                "bool": true
               }
             }
           }

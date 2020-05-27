@@ -1,5 +1,5 @@
 import powerbiVisualsApi from "powerbi-visuals-api";
-import { ClassificationMethod, Limits, decorateLayer, shouldUseGradient, getClassCount, getBreaks } from "../mapboxUtils"
+import { ClassificationMethod, Limits, decorateLayer, shouldUseGradient, getClassCount, getBreaks, getSizes, getColorStyle } from "../mapboxUtils"
 import { Palette } from "../palette"
 import { RoleMap } from "../roleMap"
 import { Layer } from "./layer"
@@ -47,7 +47,6 @@ export class Symbol extends Layer {
             type: 'symbol',
             layout: {
                 'icon-image': 'symbol',
-                'icon-size': 5
             }
         });
 
@@ -134,7 +133,7 @@ export class Symbol extends Layer {
         super.applySettings(settings, roleMap);
         const map = this.parent.getMap();
         map.loadImage(
-            settings.symbol.url || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAEKADAAQAAAABAAAAEAAAAAA0VXHyAAAAyUlEQVQ4EYVSSw4CIQwFx8StcVZuvY0b7+I5PM6sPIvxIkajfZWSRy3YBGjfpzSElOLYCfx2K1TmAIVxFI1nRcpZ8n9myLsaPzLqLRwlPK+wjRN1Nc4a4HzJ4qkzFyxk852IifKaHiQLxysKcLjZ4iGJ6RW7EQDirOh3MyHOfcEXOQ1X6EkACB8eM7PieIOjd7ia38NRKRnJtxj2IxaAdeDzOlIFmDdWCd/WFVV1m6iX/8G15YfVpseehMAko8VT9/ok/izW7BKpP1obQQCwnRAcAAAAAElFTkSuQmCC",
+            settings.symbol.url || constants.MAPBOX_ICON_BIG,
             (error, image) => {
                 if (error) {
                     console.error("Error while loading image: ", error)
@@ -145,13 +144,23 @@ export class Symbol extends Layer {
                     map.removeImage('symbol', image)
                 }
 
-                map.addImage('symbol', image)
+                map.addImage('symbol', image, {sdf: settings.symbol.sdf})
             }
         )
-        console.log("symbol layer applySettings: ", settings.symbol.show)
+
         if (settings.symbol.show) {
+            const isGradient = shouldUseGradient(roleMap.getColumn('color', Symbol.ID));
+            const limits = this.source.getLimits()
+            const sizes = getSizes(limits.size, map, settings.symbol.size / 100, settings.symbol.scaleFactor, roleMap.size());
+
+            this.colorStops = this.generateColorStops(settings.symbol, isGradient, limits.color, this.palette)
+            let colorStyle = getColorStyle(isGradient, settings.symbol, roleMap.color(this), this.colorStops);
+
+            map.setLayoutProperty(Symbol.ID, 'icon-size', sizes);
             map.setLayerZoomRange(Symbol.ID, settings.symbol.minZoom, settings.symbol.maxZoom);
+            map.setLayoutProperty(Symbol.ID, 'icon-allow-overlap', settings.symbol.allowOverlap);
             map.setPaintProperty(Symbol.ID, 'icon-opacity', settings.symbol.opacity / 100);
+            map.setPaintProperty(Symbol.ID, 'icon-color', colorStyle)
         }
     }
 
@@ -169,6 +178,6 @@ export class Symbol extends Layer {
     }
 
     showLegend(settings: MapboxSettings, roleMap: RoleMap) {
-        return false; // TODO
+        return settings.symbol.legend && roleMap.color(this) && super.showLegend(settings, roleMap)
     }
 }

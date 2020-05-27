@@ -2,6 +2,8 @@ import powerbiVisualsApi from "powerbi-visuals-api";
 import * as chroma from "chroma-js"
 import { featureCollection } from "@turf/helpers"
 import { propEach } from "@turf/meta"
+import { CircleSettings, SymbolSettings } from "./settings"
+import { ColorStops } from "./legendControl"
 
 export enum ClassificationMethod {
     Quantile,
@@ -195,3 +197,60 @@ export function getCategoricalObjectValue<T>(category: powerbiVisualsApi.DataVie
     return defaultValue;
 }
 
+
+export function getSizes(sizeLimits: Limits, map: any, sizeFactor: number, scaleFactor: number, sizeField: string) {
+    if (sizeField !== '' && sizeLimits && sizeLimits.min != null && sizeLimits.max != null && sizeLimits.min != sizeLimits.max) {
+        const style: any[] = [
+            "interpolate", ["linear"],
+            ["to-number", ['get', sizeField]]
+        ]
+
+        const classCount = getClassCount(sizeLimits.values);
+        const sizeStops: any[] = getBreaks(sizeLimits.values, ClassificationMethod.Quantile, classCount);
+        const sizeDelta = (sizeFactor * scaleFactor - sizeFactor) / classCount
+
+        sizeStops.map((sizeStop, index) => {
+            const size = sizeFactor + index * sizeDelta
+            style.push(sizeStop);
+            style.push(size);
+        });
+        return style;
+    }
+    else {
+        return [
+            'interpolate', ['linear'], ['zoom'],
+            0, sizeFactor,
+            18, sizeFactor * scaleFactor
+        ];
+    }
+}
+
+export function getColorStyle(isGradient: boolean, settings: CircleSettings | SymbolSettings, colorField: string, colorStops: ColorStops) {
+    if (colorField === '') {
+        return settings.minColor;
+    }
+
+    if (isGradient) {
+        // Set colors for continuous value
+        const continuousStyle: any = ["interpolate", ["linear"], ["to-number", ['get', colorField]]]
+        colorStops.forEach(({colorStop, color}) => {
+            continuousStyle.push(colorStop);
+            continuousStyle.push(color);
+        });
+
+        return continuousStyle;
+    }
+
+    // Set colors for categorical value
+    let categoricalStyle: any = ['match', ['to-string', ['get', colorField]]];
+    colorStops.forEach(({colorStop, color}) => {
+        categoricalStyle.push(colorStop);
+        categoricalStyle.push(color);
+    });
+
+    // Add transparent as default so that we only see regions
+    // for which we have data values
+    categoricalStyle.push('rgba(255,0,0,255)');
+
+    return categoricalStyle;
+}
