@@ -1,3 +1,4 @@
+import { Limits } from "../mapboxUtils"
 
 export abstract class Datasource {
     protected bounds: any[];
@@ -12,6 +13,15 @@ export abstract class Datasource {
     abstract addSources(map, settings);
     abstract removeSources(map);
 
+    getColorLimits(index: number) : Limits {
+        const limits = this.getLimits();
+        return limits.colorLimits;
+    }
+
+    getSizeLimits(index: number) : Limits {
+        const limits = this.getLimits();
+        return limits.sizeLimits;
+    }
 
     addToMap(map, settings) {
         this.addSources(map, settings)

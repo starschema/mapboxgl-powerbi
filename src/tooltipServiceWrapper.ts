@@ -3,8 +3,10 @@ import ITooltipService = powerbiVisualsApi.extensibility.ITooltipService;
 import VisualTooltipDataItem = powerbiVisualsApi.extensibility.VisualTooltipDataItem;
 import { Layer } from "./layers/layer"
 import { debounce } from "./mapboxUtils"
+//import ISelectionId = powerbiVisualsApi.visuals.ISelectionId;
 
 export interface TooltipEventArgs<TData> {
+    ids: number[];
     data: TData;
     coordinates: number[];
     isTouchEvent: boolean;
@@ -14,6 +16,8 @@ export interface ITooltipServiceWrapper {
     addTooltip<T>(
         map,
         layer,
+        host: any, // TODO
+        dv: any, // TODO
         tooltips,
         getTooltipInfoDelegate: (args: TooltipEventArgs<T>) => VisualTooltipDataItem[],
         reloadTooltipDataOnMouseMove?: boolean): void;
@@ -48,10 +52,11 @@ class TooltipServiceWrapper implements ITooltipServiceWrapper {
     public addTooltip<T>(
         map,
         layer: Layer,
+        host: any, // TODO
+        dv: any, // TODO
         getTooltips: () => any,
         getTooltipInfoDelegate: (args: TooltipEventArgs<T>) => VisualTooltipDataItem[],
         reloadTooltipDataOnMouseMove?: boolean): void {
-
             if (!map || !this.visualHostTooltipService.enabled()) {
                 return;
             }
@@ -79,17 +84,35 @@ class TooltipServiceWrapper implements ITooltipServiceWrapper {
                             return;
 
                         let tooltipInfo: VisualTooltipDataItem[];
+                        let selectionId;
+                        const categories = dv.categorical.categories;
                         if (reloadTooltipDataOnMouseMove || true) {
                             tooltipInfo = getTooltipInfoDelegate(tooltipEventArgs);
                             if (!tooltipInfo || tooltipInfo.length < 1) {
                                 return;
                             }
+
+                            if (categories.length > 0) {
+                                tooltipInfo.map(tooltipInfo => {
+                                    // This is a bit of a hack. We pass the id of the category under
+                                    // the cursor in the header field as that is not used
+                                    // So if it present, select the first datapoint.
+                                    // For some reason PowerBI did not want to display report tooltip if more than one identity
+                                    // is passed to the show method
+                                    // so set only the first one.
+                                    if (tooltipInfo.header !== undefined && selectionId === undefined) {
+                                        selectionId = host.createSelectionIdBuilder().withCategory(categories[0], tooltipInfo.header).createSelectionId()
+                                    }
+                                    delete tooltipInfo["header"]
+                                })
+                            }
                         }
+                        
                         this.visualHostTooltipService.show({
                             coordinates: tooltipEventArgs.coordinates,
                             isTouchEvent: false,
                             dataItems: tooltipInfo,
-                            identities: [],
+                            identities: selectionId ? [selectionId] : null,
                         });
                     }, 6, true)
                 }
@@ -137,6 +160,7 @@ class TooltipServiceWrapper implements ITooltipServiceWrapper {
                 tooltipEventArgs = {
                     // Take only the first three element until we figure out how
                     // to add pager to powerbi native tooltips
+                    ids: e.features.slice(0, 3).map(feature => feature.id),
                     data: e.features.slice(0, 3).map(feature => {
                         return Object.keys(feature.properties).map(prop => {
                             return {

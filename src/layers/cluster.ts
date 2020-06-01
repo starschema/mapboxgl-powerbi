@@ -27,6 +27,8 @@ export class Cluster extends Layer {
         return [ Cluster.ID, Cluster.LabelID, Cluster.UnclusterID ];
     }
 
+    layerIndex() { return 2 }
+
     show(settings) {
         return settings.cluster.show;
     }
@@ -38,7 +40,7 @@ export class Cluster extends Layer {
         map.removeSource('clusterData');
     }
 
-    addLayer(settings, beforeLayerId, roleMap) {
+    addLayer(settings, beforeLayerId, roleMap): string {
         const map = this.parent.getMap();
         const layers = {};
         layers[Cluster.ID] = decorateLayer({
@@ -53,7 +55,10 @@ export class Cluster extends Layer {
             type: 'cluster',
             filter: ['!has', 'Count']
         });
-        Cluster.LayerOrder.forEach((layerId) => map.addLayer(layers[layerId], beforeLayerId));
+        const lastLayerId = Cluster.LayerOrder.reduce((prevId, layerId) => {
+            map.addLayer(layers[layerId], prevId)
+            return layerId
+        }, beforeLayerId);
 
         const clusterLabelLayer = decorateLayer({
             id: Cluster.LabelID,
@@ -71,23 +76,29 @@ export class Cluster extends Layer {
             }
         });
         map.addLayer(clusterLabelLayer);
+
+        return lastLayerId
     }
 
-    moveLayer(beforeLayerId: string) {
+    moveLayer(beforeLayerId: string): string {
         const map = this.parent.getMap();
-        Cluster.LayerOrder.forEach((layerId) => map.moveLayer(layerId, beforeLayerId));
+        const lastId = Cluster.LayerOrder.reduce((prevId, layerId) => {
+            map.moveLayer(layerId, prevId)
+            return layerId
+        }, beforeLayerId);
         if (!beforeLayerId) {
             // the cluster label should still be on top when the other layers are moved to top
             map.moveLayer(Cluster.LabelID);
         }
+        return lastId
     }
 
     getClassificationMethod(): ClassificationMethod {
         return ClassificationMethod.Equidistant
     }
 
-    applySettings(settings, roleMap) {
-        super.applySettings(settings, roleMap);
+    applySettings(settings: MapboxSettings, roleMap: RoleMap, prevId: string): string {
+        const lastId = super.applySettings(settings, roleMap, prevId);
         const map = this.parent.getMap();
         this.colorStops = []
         if (settings.cluster.show) {
@@ -121,6 +132,8 @@ export class Cluster extends Layer {
                 map.setLayoutProperty(Cluster.LabelID, 'text-field', `{${settings.cluster.aggregation}}`);
             }
         }
+
+        return lastId
     }
 
     showLegend(settings: MapboxSettings, roleMap: RoleMap) {

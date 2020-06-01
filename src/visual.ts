@@ -51,7 +51,7 @@ import { MapboxGeocoderControl } from "./mapboxGeocoderControl"
 
 import * as mapboxgl from "mapbox-gl"
 import { MapboxSettings, ChoroplethSettings } from "./settings";
-import { zoomToData  } from "./mapboxUtils";
+import { zoomToData, calculateLabelPosition  } from "./mapboxUtils";
 import { ITooltipServiceWrapper, createTooltipServiceWrapper, TooltipEventArgs } from "./tooltipServiceWrapper"
 import { mapboxConverter } from "./mapboxConverter";
 import { Templates } from "./templates";
@@ -110,8 +110,10 @@ export class MapboxMap implements IVisual {
 
     onUpdate(map, settings, updatedHandler: Function) {
         try {
-            this.layers.map(layer => {
-                layer.applySettings(settings, this.roleMap);
+            let prevId = calculateLabelPosition(settings, map)
+            this.layers.sort( (a,b) => b.layerIndex() - a.layerIndex())
+            .map(layer => {
+                prevId = layer.applySettings(settings, this.roleMap, prevId);
             });
 
             this.updateLegend(settings)
@@ -292,9 +294,10 @@ export class MapboxMap implements IVisual {
                 const newZoom = Math.floor(this.map.getZoom())
                 if (this.previousZoom != newZoom) {
                     this.previousZoom = newZoom;
+                    let firstSymbolId = calculateLabelPosition(this.settings, this.map)
                     this.layers.map(layer => {
                         if (layer.handleZoom(this.settings)) {
-                            layer.applySettings(this.settings, this.roleMap);
+                            layer.applySettings(this.settings, this.roleMap, firstSymbolId);
                         }
                     });
                     this.updateLegend(this.settings);
@@ -308,11 +311,12 @@ export class MapboxMap implements IVisual {
             this.tooltipServiceWrapper.addTooltip(
                 this.map,
                 layer,
+                this.host,
+                dataView,
                 () => this.roleMap.tooltips(),
                 (tooltipEvent: TooltipEventArgs<number>) => {
                     return layer.handleTooltip(tooltipEvent, this.roleMap, this.settings);
-                }
-            );
+            });
         });
 
         this.onUpdate(this.map, this.settings, this.updatedHandler);
@@ -511,6 +515,7 @@ export class MapboxMap implements IVisual {
             if (options.objectName == 'colorSelector') {
                 return this.palette.enumerateObjectInstances(options);
             } else {
+                MapboxSettings.roleMap = this.roleMap;
                 return MapboxSettings.enumerateObjectInstances(this.settings || MapboxSettings.getDefault(), options);
             }
         }

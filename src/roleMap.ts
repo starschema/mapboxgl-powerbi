@@ -51,9 +51,17 @@ export class RoleMap {
         return this.map['tooltips'];
     }
 
+    get(role: string, index: number) {
+        if (this.map[role] && this.map[role].length > index) {
+            return this.map[role][index];
+        }
+
+        return null
+    }
+
     getAll(role: string) : Column[] {
         if (!this.map[role] || this.map[role].length <= 0) {
-            return null;
+            return [];
         }
 
         return this.map[role]

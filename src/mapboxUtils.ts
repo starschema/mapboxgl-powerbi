@@ -2,7 +2,7 @@ import powerbiVisualsApi from "powerbi-visuals-api";
 import * as chroma from "chroma-js"
 import { featureCollection } from "@turf/helpers"
 import { propEach } from "@turf/meta"
-import { CircleSettings, SymbolSettings } from "./settings"
+import { MapboxSettings, CircleSettings, SymbolSettings } from "./settings"
 import { ColorStops } from "./legendControl"
 
 export enum ClassificationMethod {
@@ -254,3 +254,27 @@ export function getColorStyle(isGradient: boolean, settings: CircleSettings | Sy
 
     return categoricalStyle;
 }
+
+export function calculateLabelPosition(settings: MapboxSettings, map: mapboxgl.Map) : string {
+    // If there is no firstSymbolId specified, it adds the data as the last element.
+    let firstSymbolId: string = null;
+    if (settings.api.labelPosition === 'above') {
+        // For default styles place data under waterway-label layer
+        firstSymbolId = 'waterway-label';
+        if (settings.api.style == 'mapbox://styles/mapbox/satellite-v9?optimize=true' ||
+            settings.api.style == 'custom') {
+            // For custom style find the lowest symbol layer to place data underneath
+            firstSymbolId = '';
+            let layers = map.getStyle().layers;
+            for (let i = 0; i < layers.length; i++) {
+                if (layers[i].type === 'symbol') {
+                    firstSymbolId = layers[i].id;
+                    break;
+                }
+            }
+        }
+    }
+    return firstSymbolId;
+}
+
+

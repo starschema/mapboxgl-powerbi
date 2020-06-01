@@ -5,6 +5,7 @@ import * as mapboxgl from "mapbox-gl"
 
 import { debounce } from "./mapboxUtils"
 import { Circle } from "./layers/circle"
+import { Symbol } from "./layers/symbol"
 import { Choropleth } from "./layers/choropleth"
 import { Layer } from "./layers/layer"
 import { FeatureOps } from "./featureOps"
@@ -118,7 +119,7 @@ export class Filter {
             }
         }, 12, true);
 
-        const hoverHighLightLayers = [Circle.ID, Choropleth.ID, Choropleth.ExtrusionID];
+        const hoverHighLightLayers = [Circle.ID, Choropleth.ID, Choropleth.ExtrusionID, Symbol.ID];
         hoverHighLightLayers.map(hhLayer => {
             map.off('mousemove', hhLayer, mouseMoveHandler);
             map.on('mousemove', hhLayer, mouseMoveHandler);

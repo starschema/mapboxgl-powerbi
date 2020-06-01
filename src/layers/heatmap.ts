@@ -19,7 +19,9 @@ export class Heatmap extends Layer {
         return [ Heatmap.ID ];
     }
 
-    addLayer(settings, beforeLayerId, roleMap) {
+    layerIndex() { return 1 }
+
+    addLayer(settings, beforeLayerId, roleMap): string {
         const map = this.parent.getMap();
         const layers = {};
         layers[Heatmap.ID] = decorateLayer({
@@ -27,7 +29,10 @@ export class Heatmap extends Layer {
             source: 'data',
             type: 'heatmap',
         });
-        Heatmap.LayerOrder.forEach((layerId) => map.addLayer(layers[layerId], beforeLayerId));
+        return Heatmap.LayerOrder.reduce((prevId, layerId) => {
+            map.addLayer(layers[layerId], prevId)
+            return layerId
+        }, beforeLayerId);
     }
 
     removeLayer() {
@@ -36,13 +41,16 @@ export class Heatmap extends Layer {
         this.source.removeFromMap(map, Heatmap.ID);
     }
 
-    moveLayer(beforeLayerId: string) {
+    moveLayer(beforeLayerId: string): string {
         const map = this.parent.getMap();
-        Heatmap.LayerOrder.forEach((layerId) => map.moveLayer(layerId, beforeLayerId));
+        return Heatmap.LayerOrder.reduce((prevId, layerId) => {
+            map.moveLayer(layerId, prevId)
+            return layerId
+        }, beforeLayerId);
     }
 
-    applySettings(settings: MapboxSettings, roleMap) {
-        super.applySettings(settings, roleMap);
+    applySettings(settings: MapboxSettings, roleMap: RoleMap, prevId: string): string {
+        const lastId = super.applySettings(settings, roleMap, prevId);
         const map = this.parent.getMap();
         if (settings.heatmap.show) {
             map.setLayerZoomRange(Heatmap.ID, settings.heatmap.minZoom, settings.heatmap.maxZoom);
@@ -57,6 +65,8 @@ export class Heatmap extends Layer {
                 0.5, settings.heatmap.midColor,
                 1, settings.heatmap.maxColor]);
         }
+
+        return lastId
     }
 
     showLegend(settings: MapboxSettings, roleMap: RoleMap) {

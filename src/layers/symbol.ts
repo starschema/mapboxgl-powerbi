@@ -31,12 +31,14 @@ export class Symbol extends Layer {
         return [ Symbol.ID ];
     }
 
+    layerIndex() { return 4 }
+
     getSource(settings) {
         this.settings = settings.symbol;
         return super.getSource(settings);
     }
 
-    addLayer(settings, beforeLayerId, roleMap) {
+    addLayer(settings, beforeLayerId, roleMap): string {
         const map = this.parent.getMap();
         const latitude = roleMap.latitude()
         const layers = {};
@@ -55,17 +57,29 @@ export class Symbol extends Layer {
             id: Symbol.HighlightID,
             type: 'symbol',
             source: 'data',
-            filter: zeroFilter
+            filter: zeroFilter,
+            layout: {
+                'icon-image': 'symbol',
+            }
         });
 
-        Symbol.LayerOrder.forEach((layerId) => map.addLayer(layers[layerId], beforeLayerId));
+        const lastId = Symbol.LayerOrder.reduce((prevId, layerId) => {
+            map.addLayer(layers[layerId], lastId)
+            return layerId
+        }, beforeLayerId);
 
         map.setPaintProperty(Symbol.HighlightID, 'icon-opacity', 1);
+        map.setPaintProperty(Symbol.HighlightID, 'icon-color', settings.symbol.highlightColor)
+
+        return lastId
     }
 
-    moveLayer(beforeLayerId: string) {
+    moveLayer(beforeLayerId: string): string {
         const map = this.parent.getMap();
-        Symbol.LayerOrder.forEach((layerId) => map.moveLayer(layerId, beforeLayerId));
+        return Symbol.LayerOrder.reduce((prevId, layerId) => {
+            map.moveLayer(layerId, prevId)
+            return layerId
+        }, beforeLayerId);
     }
 
     hoverHighLight(e) {
@@ -129,8 +143,8 @@ export class Symbol extends Layer {
         this.source.removeFromMap(map, Symbol.ID);
     }
 
-    applySettings(settings: MapboxSettings, roleMap) {
-        super.applySettings(settings, roleMap);
+    applySettings(settings: MapboxSettings, roleMap: RoleMap, prevId: string): string {
+        const lastId = super.applySettings(settings, roleMap, prevId);
         const map = this.parent.getMap();
         map.loadImage(
             settings.symbol.url || constants.MAPBOX_ICON_BIG,
@@ -149,19 +163,31 @@ export class Symbol extends Layer {
         )
 
         if (settings.symbol.show) {
-            const isGradient = shouldUseGradient(roleMap.getColumn('color', Symbol.ID));
-            const limits = this.source.getLimits()
-            const sizes = getSizes(limits.size, map, settings.symbol.size / 100, settings.symbol.scaleFactor, roleMap.size());
 
-            this.colorStops = this.generateColorStops(settings.symbol, isGradient, limits.color, this.palette)
-            let colorStyle = getColorStyle(isGradient, settings.symbol, roleMap.color(this), this.colorStops);
-
+            const sizeField = roleMap.get('size', settings.symbol.sizeField)
+            const sizeLimits = this.source.getSizeLimits(settings.symbol.sizeField)
+            const sizeFieldName = sizeField ? sizeField.displayName : ""
+            const sizes = getSizes(sizeLimits, map, settings.symbol.size / 100, settings.symbol.scaleFactor, sizeFieldName);
             map.setLayoutProperty(Symbol.ID, 'icon-size', sizes);
-            map.setLayerZoomRange(Symbol.ID, settings.symbol.minZoom, settings.symbol.maxZoom);
-            map.setLayoutProperty(Symbol.ID, 'icon-allow-overlap', settings.symbol.allowOverlap);
-            map.setPaintProperty(Symbol.ID, 'icon-opacity', settings.symbol.opacity / 100);
+            map.setLayoutProperty(Symbol.HighlightID, 'icon-size', sizes);
+
+
+            const colorField = roleMap.get('color', settings.symbol.colorField)
+            const isGradient = shouldUseGradient(colorField);
+            const colorLimits = this.source.getColorLimits(settings.symbol.colorField)
+            this.colorStops = this.generateColorStops(settings.symbol, isGradient, colorLimits, this.palette)
+            const colorFieldName = colorField ? colorField.displayName : ""
+            let colorStyle = getColorStyle(isGradient, settings.symbol, colorFieldName, this.colorStops);
             map.setPaintProperty(Symbol.ID, 'icon-color', colorStyle)
+
+            map.setLayerZoomRange(Symbol.ID, settings.symbol.minZoom, settings.symbol.maxZoom);
+            map.setLayerZoomRange(Symbol.HighlightID, settings.symbol.minZoom, settings.symbol.maxZoom);
+            map.setLayoutProperty(Symbol.ID, 'icon-allow-overlap', settings.symbol.allowOverlap);
+            map.setLayoutProperty(Symbol.HighlightID, 'icon-allow-overlap', settings.symbol.allowOverlap);
+            map.setPaintProperty(Symbol.ID, 'icon-opacity', settings.symbol.opacity / 100);
         }
+
+        return lastId
     }
 
     handleTooltip(tooltipEvent, roleMap, settings: MapboxSettings) {

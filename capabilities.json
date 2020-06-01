@@ -120,10 +120,10 @@
             "max": 1
           },
           "color": {
-            "max": 2
+            "max": 3
           },
           "size": {
-            "max": 1
+            "max": 3
           },
           "cluster": {
             "max": 1
@@ -370,6 +370,64 @@
               "displayName": "Circle",
               "type": {
                 "bool": true
+              }
+            },
+            "colorField": {
+                "displayName": "Color Field",
+                "displayNameKey": "colorField",
+                "description": "Which field in the Role Color to use in this layer",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "-1",
+                    "displayName": "None",
+                    "displayNameKey": "none"
+                  },
+                  {
+                    "value": "0",
+                    "displayName": "Field #1",
+                    "displayNameKey": "field1"
+                  },
+                  {
+                    "value": "1",
+                    "displayName": "Field #2",
+                    "displayNameKey": "field2"
+                  },
+                  {
+                    "value": "2",
+                    "displayName": "Field #3",
+                    "displayNameKey": "field3"
+                  }
+                ]
+              }
+            },
+            "sizeField": {
+                "displayName": "Size Field",
+                "displayNameKey": "sizeField",
+                "description": "Which field in the Role Size to use in this layer",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "-1",
+                    "displayName": "None",
+                    "displayNameKey": "none"
+                  },
+                  {
+                    "value": "0",
+                    "displayName": "Field #1",
+                    "displayNameKey": "field1"
+                  },
+                  {
+                    "value": "1",
+                    "displayName": "Field #2",
+                    "displayNameKey": "field2"
+                  },
+                  {
+                    "value": "2",
+                    "displayName": "Field #3",
+                    "displayNameKey": "field3"
+                  }
+                ]
               }
             },
             "diverging": {
@@ -823,6 +881,64 @@
               },
               "displayName": "Aggregation function",
               "displayNameKey": "aggregation"
+            },
+            "colorField": {
+                "displayName": "Color Field",
+                "displayNameKey": "colorField",
+                "description": "Which field in the Role Color to use in this layer",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "-1",
+                    "displayName": "None",
+                    "displayNameKey": "none"
+                  },
+                  {
+                    "value": "0",
+                    "displayName": "Field #1",
+                    "displayNameKey": "field1"
+                  },
+                  {
+                    "value": "1",
+                    "displayName": "Field #2",
+                    "displayNameKey": "field2"
+                  },
+                  {
+                    "value": "2",
+                    "displayName": "Field #3",
+                    "displayNameKey": "field3"
+                  }
+                ]
+              }
+            },
+            "sizeField": {
+                "displayName": "Size Field",
+                "displayNameKey": "sizeField",
+                "description": "Which field in the Role Size to use in this layer",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "-1",
+                    "displayName": "None",
+                    "displayNameKey": "none"
+                  },
+                  {
+                    "value": "0",
+                    "displayName": "Field #1",
+                    "displayNameKey": "field1"
+                  },
+                  {
+                    "value": "1",
+                    "displayName": "Field #2",
+                    "displayNameKey": "field2"
+                  },
+                  {
+                    "value": "2",
+                    "displayName": "Field #3",
+                    "displayNameKey": "field3"
+                  }
+                ]
+              }
             },
             "diverging": {
               "displayName": "Diverging",
@@ -1642,6 +1758,64 @@
                 "bool": true
               }
             },
+            "colorField": {
+                "displayName": "Color Field",
+                "displayNameKey": "colorField",
+                "description": "Which field in the Role Color to use in this layer",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "-1",
+                    "displayName": "None",
+                    "displayNameKey": "none"
+                  },
+                  {
+                    "value": "0",
+                    "displayName": "Field #1",
+                    "displayNameKey": "field1"
+                  },
+                  {
+                    "value": "1",
+                    "displayName": "Field #2",
+                    "displayNameKey": "field2"
+                  },
+                  {
+                    "value": "2",
+                    "displayName": "Field #3",
+                    "displayNameKey": "field3"
+                  }
+                ]
+              }
+            },
+            "sizeField": {
+                "displayName": "Size Field",
+                "displayNameKey": "sizeField",
+                "description": "Which field in the Role Size to use in this layer",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "-1",
+                    "displayName": "None",
+                    "displayNameKey": "none"
+                  },
+                  {
+                    "value": "0",
+                    "displayName": "Field #1",
+                    "displayNameKey": "field1"
+                  },
+                  {
+                    "value": "1",
+                    "displayName": "Field #2",
+                    "displayNameKey": "field2"
+                  },
+                  {
+                    "value": "2",
+                    "displayName": "Field #3",
+                    "displayNameKey": "field3"
+                  }
+                ]
+              }
+            },
             "url": {
               "displayName": "URL",
               "displayNameKey": "url",
@@ -1754,6 +1928,18 @@
               "description": "Maximum value to consider for colors",
               "type": {
                 "numeric": true
+              }
+            },
+            "highlightColor": {
+              "displayName": "Highlight Color",
+              "displayNameKey": "highlightColor",
+              "description": "Defines the color a polyon will take when highlighted.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
               }
             },
             "minZoom": {

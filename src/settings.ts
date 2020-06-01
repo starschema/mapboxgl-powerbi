@@ -30,7 +30,10 @@ import { dataViewObjectsParser } from "powerbi-visuals-utils-dataviewutils";
 import DataViewObjectsParser = dataViewObjectsParser.DataViewObjectsParser;
 import powerbiVisualsApi from "powerbi-visuals-api";
 
+import { RoleMap } from "./roleMap"
+
 export class MapboxSettings extends DataViewObjectsParser {
+        public static roleMap: RoleMap;
         public api: APISettings = new APISettings();
         public geocoder: GeocoderSettings = new GeocoderSettings();
         public cluster: ClusterSettings = new ClusterSettings();
@@ -42,8 +45,8 @@ export class MapboxSettings extends DataViewObjectsParser {
 
         public static enumerateObjectInstances(
             dataViewObjectParser: DataViewObjectsParser,
-            options: powerbiVisualsApi.EnumerateVisualObjectInstancesOptions): powerbiVisualsApi.VisualObjectInstanceEnumeration {
-
+            options: powerbiVisualsApi.EnumerateVisualObjectInstancesOptions,
+        ): powerbiVisualsApi.VisualObjectInstanceEnumeration {
             let settings: MapboxSettings = <MapboxSettings>dataViewObjectParser;
             let instanceEnumeration = DataViewObjectsParser.enumerateObjectInstances(dataViewObjectParser, options);
 
@@ -105,6 +108,8 @@ export class APISettings {
 
 export class CircleSettings {
     public show: boolean = true;
+    public colorField: number = 0;
+    public sizeField: number = 0;
     public radius: number = 3;
     public scaleFactor: number = 5;
     public diverging: boolean = false;
@@ -134,6 +139,28 @@ export class CircleSettings {
             delete properties.midValue;
             delete properties.maxValue;
         }
+
+        instances[0].validValues = {...instances[0].validValues,
+            colorField: ["-1"],
+            sizeField: ["-1"],
+        }
+
+        let colorFields = MapboxSettings.roleMap.getAll("color");
+        colorFields.map( (field, index) => {
+            instances[0].validValues.colorField.push(`${index}`)
+        });
+        if (properties.colorField > (colorFields.length - 1)) {
+            properties.colorField = '-1'
+        }
+
+        let sizeFields = MapboxSettings.roleMap.getAll("size");
+        sizeFields.map( (field, index) => {
+            instances[0].validValues.sizeField.push(`${index}`)
+        });
+        if (properties.sizeField > (sizeFields.length - 1)) {
+            properties.sizeField = '-1'
+        }
+
         return { instances }
     }
 }
@@ -182,6 +209,8 @@ export class ChoroplethSettings {
 
     public show: boolean = false;
     public aggregation: string = "Count";
+    public colorField: number = 0;
+    public sizeField: number = 0;
     public diverging: boolean = false;
     public minColor: string = "#edf8b1";
     public midColor: string = "#7fcdbb";
@@ -342,7 +371,9 @@ export class ChoroplethSettings {
                     max: 10,
                 }
             },
-            selectedLevel: []
+            selectedLevel: [],
+            colorField: ["-1"],
+            sizeField: ["-1"],
         }
 
         for (let i = 0; i < properties.maxLevel; i++) {
@@ -374,6 +405,24 @@ export class ChoroplethSettings {
             delete properties.midValue;
             delete properties.maxValue;
         }
+
+        let colorFields = MapboxSettings.roleMap.getAll("color");
+        colorFields.map( (field, index) => {
+            instances[0].validValues.colorField.push(`${index}`)
+        });
+        if (properties.colorField > (colorFields.length - 1)) {
+            properties.colorField = '-1'
+        }
+
+        let sizeFields = MapboxSettings.roleMap.getAll("size");
+        sizeFields.map( (field, index) => {
+            instances[0].validValues.sizeField.push(`${index}`)
+        });
+        if (properties.sizeField > (sizeFields.length - 1)) {
+            properties.sizeField = '-1'
+        }
+
+
 
         return { instances };
     }
@@ -431,6 +480,8 @@ export class RasterSettings {
 
 export class SymbolSettings {
     public show: boolean = false;
+    public colorField: number = 0;
+    public sizeField: number = 0;
     public url: string = "";
     public sdf: boolean = true;
     public opacity: number = 80;
@@ -444,6 +495,7 @@ export class SymbolSettings {
     public minValue: number = null;
     public midValue: number = null;
     public maxValue: number = null;
+    public highlightColor: string = "#2c7fb8";
     public minZoom: number = 0;
     public maxZoom: number = 22;
     public legend: boolean = true;
@@ -451,6 +503,30 @@ export class SymbolSettings {
     public enumerateObjectInstances(objectEnumeration) {
         let instances = objectEnumeration.instances;
         let properties = instances[0].properties;
+
+        instances[0].validValues = {...instances[0].validValues,
+            minZoom: {
+                numberRange: {
+                    min: 0,
+                    max: 22,
+                }
+            },
+            maxZoom: {
+                numberRange: {
+                    min: 0,
+                    max: 22,
+                }
+            },
+            opacity: {
+                numberRange: {
+                    min: 0,
+                    max: 100,
+                }
+            },
+            colorField: ["-1"],
+            sizeField: ["-1"],
+        }
+        //
         // Hide / show center color according to diverging property
         if (!properties.diverging) {
             delete properties.midColor;
@@ -458,6 +534,24 @@ export class SymbolSettings {
             delete properties.midValue;
             delete properties.maxValue;
         }
-        return { instances }
+
+        let colorFields = MapboxSettings.roleMap.getAll("color");
+        colorFields.map( (field, index) => {
+            instances[0].validValues.colorField.push(`${index}`)
+        });
+        if (properties.colorField > (colorFields.length - 1)) {
+            properties.colorField = '-1'
+        }
+
+        let sizeFields = MapboxSettings.roleMap.getAll("size");
+        sizeFields.map( (field, index) => {
+            instances[0].validValues.sizeField.push(`${index}`)
+        });
+        if (properties.sizeField > (sizeFields.length - 1)) {
+            properties.sizeField = '-1'
+        }
+
+        return { instances };
+
     }
 }

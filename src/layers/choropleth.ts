@@ -47,11 +47,14 @@ export class Choropleth extends Layer {
         }
         return Choropleth.ID
     }
+
+    layerIndex() { return 0 }
+
     getLayerIDs() {
         return [Choropleth.ID, Choropleth.OutlineID, Choropleth.ExtrusionID];
     }
 
-    addLayer(settings: MapboxSettings, beforeLayerId, roleMap) {
+    addLayer(settings: MapboxSettings, beforeLayerId, roleMap): string {
         const map = this.parent.getMap();
 
         const choroSettings = settings.choropleth;
@@ -124,7 +127,10 @@ export class Choropleth extends Layer {
             filter: zeroFilter
         });
 
-        Choropleth.LayerOrder.forEach((layerId) => map.addLayer(layers[layerId], beforeLayerId));
+        return Choropleth.LayerOrder.reduce((prevId, layerId) => {
+            map.addLayer(layers[layerId], prevId)
+            return layerId
+        }, beforeLayerId);
     }
 
     isExtruding() {
@@ -213,9 +219,12 @@ export class Choropleth extends Layer {
         this.source.removeFromMap(map, Choropleth.ID);
     }
 
-    moveLayer(beforeLayerId: string) {
+    moveLayer(beforeLayerId: string): string {
         const map = this.parent.getMap();
-        Choropleth.LayerOrder.forEach((layerId) => map.moveLayer(layerId, beforeLayerId));
+        return Choropleth.LayerOrder.reduce((prevId, layerId) => {
+            map.moveLayer(layerId, prevId)
+            return layerId
+        }, beforeLayerId);
     }
 
     getSource(settings) {
@@ -347,8 +356,8 @@ export class Choropleth extends Layer {
         return ClassificationMethod.Equidistant
     }
 
-    applySettings(settings:MapboxSettings, roleMap: RoleMap) {
-        super.applySettings(settings, roleMap);
+    applySettings(settings:MapboxSettings, roleMap: RoleMap, prevId: string): string {
+        const lastId = super.applySettings(settings, roleMap, prevId);
         const map = this.parent.getMap();
         this.settings = settings.choropleth
         const choroSettings = settings.choropleth;
@@ -399,6 +408,8 @@ export class Choropleth extends Layer {
             this.setFillProps(map, choroSettings)
             this.setZoom(map, choroSettings)
         }
+
+        return lastId
     }
 
     showLegend(settings: MapboxSettings, roleMap: RoleMap) {

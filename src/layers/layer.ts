@@ -5,7 +5,7 @@ import * as tooltip from "powerbi-visuals-utils-tooltiputils"
 
 import * as chroma from "chroma-js"
 
-import { ClassificationMethod, filterValues, getBreaks, getClassCount, Limits } from "../mapboxUtils"
+import { ClassificationMethod, filterValues, getBreaks, getClassCount, Limits, calculateLabelPosition } from "../mapboxUtils"
 import { RoleMap } from "../roleMap"
 import { ColorStops, LegendControl } from "../legendControl"
 import { MapboxSettings, CircleSettings, ChoroplethSettings, ClusterSettings, SymbolSettings } from "../settings"
@@ -41,6 +41,8 @@ export abstract class Layer {
         }
         return null;
     }
+
+    layerIndex(): number { return -1 }
 
     getId() {
         return this.id
@@ -151,17 +153,21 @@ export abstract class Layer {
         return ClassificationMethod.Quantile
     }
 
-    applySettings(settings: MapboxSettings, roleMap) {
+    applySettings(settings: MapboxSettings, roleMap: RoleMap, prevId: string): string {
         const map = this.parent.getMap();
+        let lastId = prevId
         if (settings[this.id].show) {
+            //let firstSymbolId = calculateLabelPosition(settings, map)
             if (this.prevLabelPositionSetting === settings.api.labelPosition) {
                 if (!this.layerExists()) {
-                    let firstSymbolId = this.calculateLabelPosition(settings, map)
-                    this.addLayer(settings, firstSymbolId, roleMap);
+                    this.addLayer(settings, prevId, roleMap);
                 }
             } else {
-                const firstSymbolId = this.calculateLabelPosition(settings, map)
-                this.moveLayer(firstSymbolId)
+                this.moveLayer(prevId)
+            }
+            let ids = this.getLayerIDs()
+            if (ids && ids.length > 0) { 
+                lastId = ids[ids.length - 1]
             }
         } else {
             if (this.layerExists()) {
@@ -171,10 +177,12 @@ export abstract class Layer {
         if (this.prevLabelPositionSetting !== settings.api.labelPosition) {
             this.prevLabelPositionSetting = settings.api.labelPosition;
         }
+
+        return lastId
     }
 
-    addLayer(settings, beforeLayerId: string, roleMap) {}
-    moveLayer(beforeLayerId: string) {}
+    abstract addLayer(settings, beforeLayerId: string, roleMap): string
+    abstract moveLayer(beforeLayerId: string): string
     abstract removeLayer()
 
     layerExists() {
@@ -231,28 +239,6 @@ export abstract class Layer {
     */
     handleTooltip(tooltipEvent: TooltipEventArgs<number>, roleMap, settings): any[] {
         return [];
-    }
-
-    calculateLabelPosition(settings: MapboxSettings, map: mapboxgl.Map) {
-        // If there is no firstSymbolId specified, it adds the data as the last element.
-        let firstSymbolId = null;
-        if (settings.api.labelPosition === 'above') {
-            // For default styles place data under waterway-label layer
-            firstSymbolId = 'waterway-label';
-            if (settings.api.style == 'mapbox://styles/mapbox/satellite-v9?optimize=true' ||
-                settings.api.style == 'custom') {
-                // For custom style find the lowest symbol layer to place data underneath
-                firstSymbolId = '';
-                let layers = map.getStyle().layers;
-                for (let i = 0; i < layers.length; i++) {
-                    if (layers[i].type === 'symbol') {
-                        firstSymbolId = layers[i].id;
-                        break;
-                    }
-                }
-            }
-        }
-        return firstSymbolId;
     }
 
     static getTooltipData(value: any, ids?: any): any[] {
