@@ -165,7 +165,7 @@ export class Symbol extends Layer {
     }
 
     handleTooltip(tooltipEvent, roleMap, settings: MapboxSettings) {
-        const tooltipData = Layer.getTooltipData(tooltipEvent.data)
+        const tooltipData = Layer.getTooltipData(tooltipEvent.data, tooltipEvent.ids)
             .filter((elem) => roleMap.tooltips().some( t => t.displayName === elem.displayName)); // Only show the fields that are added to the tooltips
         return tooltipData.sort( (a, b) => {
             const aIndex = roleMap.tooltips().findIndex( t => t.displayName === a.displayName)

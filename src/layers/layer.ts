@@ -255,12 +255,12 @@ export abstract class Layer {
         return firstSymbolId;
     }
 
-    static getTooltipData(value: any): any[] {
+    static getTooltipData(value: any, ids?: any): any[] {
         if (!value) {
             return [];
         }
         // Flatten the multiple properties or multiple datapoints
-        return [].concat.apply([], value.map(properties => {
+        return [].concat.apply([], value.map((properties, i) => {
             // This mapping is needed to copy the value with the toString
             // call as otherwise some caching logic causes to be the same
             // tooltip displayed for all datapoints.
@@ -268,6 +268,7 @@ export abstract class Layer {
                 return {
                     displayName: prop.key,
                     value: prop.value.toString(),
+                    header: ids ? ids[i] : "",
                 };
             });
         }));
