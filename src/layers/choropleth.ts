@@ -315,17 +315,17 @@ export class Choropleth extends Layer {
         return (value => this.palette.getColor(value))
     }
 
-    preprocessData(roleMap : RoleMap, choroplethData, getColorOfLocation ): {location: string, color: string, size: number}[] {
+    preprocessData(roleMap : RoleMap, settings: MapboxSettings, choroplethData, getColorOfLocation ): {location: string, color: string, size: number}[] {
         const existingStops = {};
         const result = [];
 
         const locationCol = roleMap.location()
-        const colorCol = roleMap.color(this)
-        const sizeCol = roleMap.size()
+        const colorCol = roleMap.get('color', settings.choropleth.colorField)
+        const sizeCol = roleMap.get('size', settings.choropleth.sizeField)
         for (let row of choroplethData) {
 
             const location = row[locationCol]
-            const color = getColorOfLocation(row[colorCol])
+            const color = colorCol != null ? getColorOfLocation(row[colorCol.displayName]) : null
 
             if (!location || !color) {
                 // Stop value cannot be undefined or null; don't add this row to the stops
@@ -341,7 +341,7 @@ export class Choropleth extends Layer {
             }
             existingStops[locationStr] = true;
 
-            const size = sizeCol !== '' ? row[sizeCol] : null
+            const size = sizeCol != null ? row[sizeCol.displayName] : null
             result.push({
                 location,
                 color,
@@ -371,13 +371,15 @@ export class Choropleth extends Layer {
             ChoroplethSettings.fillPredefinedProperties(choroSettings);
 
             const choroplethData = this.source.getData(map, settings);
-            const isGradient = shouldUseGradient(roleMap.getColumn('color', Choropleth.ID));
-            const limits = this.source.getLimits();
-            this.colorStops = this.generateColorStops(choroSettings, isGradient, limits.color, this.palette)
+
+            const colorField = roleMap.get('color', settings.choropleth.colorField)
+            const isGradient = shouldUseGradient(colorField);
+
+            const colorLimits = this.source.getColorLimits(settings.choropleth.colorField)
+            this.colorStops = this.generateColorStops(choroSettings, isGradient, colorLimits, this.palette)
 
             const getColorOfLocation = this.getFunctionForColorOfLocation(isGradient, this.colorStops)
-            const preprocessedData = this.preprocessData(roleMap, choroplethData, getColorOfLocation)
-
+            const preprocessedData = this.preprocessData(roleMap, settings, choroplethData, getColorOfLocation)
             if (preprocessedData) {
                 // We use the old property function syntax here because the data-join technique is faster to parse still than expressions with this method
                 const property = choroSettings.getCurrentVectorProperty()
@@ -385,7 +387,7 @@ export class Choropleth extends Layer {
                 const defaultColor = 'rgba(0,0,0,0)';
                 const colors = { type: "categorical", property, default: defaultColor, stops: [] };
 
-                const sizeLimits = limits.size;
+                const sizeLimits = this.source.getSizeLimits(settings.choropleth.sizeField)
                 const sizes: any = sizeCol !== '' ? { type: "categorical", property, default: 0, stops: [] } : choroSettings.height * Choropleth.HeightMultiplier
 
                 const filter = ['in', property];

@@ -13,15 +13,8 @@ export abstract class Datasource {
     abstract addSources(map, settings);
     abstract removeSources(map);
 
-    getColorLimits(index: number) : Limits {
-        const limits = this.getLimits();
-        return limits.colorLimits;
-    }
-
-    getSizeLimits(index: number) : Limits {
-        const limits = this.getLimits();
-        return limits.sizeLimits;
-    }
+    abstract getColorLimits(index: number) : Limits
+    abstract getSizeLimits(index: number) : Limits
 
     addToMap(map, settings) {
         this.addSources(map, settings)
@@ -40,7 +33,6 @@ export abstract class Datasource {
 
     update(map, features, roleMap, settings) {}
     getBounds() : any[] { return this.bounds }
-    getLimits() : any { return null }
     handleZoom(map, settings) : boolean {
         return false;
     }

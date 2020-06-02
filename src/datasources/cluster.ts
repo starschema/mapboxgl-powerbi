@@ -34,7 +34,11 @@ export class Cluster extends Datasource {
         this.cluster.load([]);
     }
 
-    getLimits() {
+    getColorLimits(index: number): Limits {
+        return this.limits
+    }
+
+    getSizeLimits(index: number): Limits {
         return this.limits
     }
 

@@ -43,13 +43,6 @@ export class Point extends Datasource {
         return this.getLimitsAtIndex(this.sizeLimits, index)
     }
 
-    getLimits() {
-        return {
-            color: this.getLimitsAtIndex(this.colorLimits, 0),
-            size: this.getLimitsAtIndex(this.sizeLimits, 0),
-        };
-    }
-
     ensure(map, layerId, settings): void {
         super.ensure(map, layerId, settings)
         const source: any = map.getSource('data');

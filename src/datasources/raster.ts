@@ -1,4 +1,5 @@
 import { Datasource } from "./datasource"
+import { Limits } from "../mapboxUtils"
 
 export class Raster extends Datasource {
     constructor() {
@@ -20,6 +21,13 @@ export class Raster extends Datasource {
         map.removeSource('raster');
     }
 
+    getColorLimits(index: number): Limits {
+        return null
+    }
+
+    getSizeLimits(index: number): Limits {
+        return null
+    }
 
     ensure(map, layerId, settings): void {
         super.ensure(map, layerId, settings)
