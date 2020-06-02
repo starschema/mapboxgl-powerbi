@@ -68,6 +68,7 @@ export class APISettings {
     public accessToken: string = "";
     public style: string = "mapbox:\/\/styles\/mapbox\/light-v10?optimize=true";
     public styleUrl: string = "";
+    public showStyleSelector: boolean = false;
     public zoom: number = 0;
     public startLong: number = 0;
     public startLat: number = 0;

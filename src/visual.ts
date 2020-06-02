@@ -47,6 +47,7 @@ import { RoleMap } from './roleMap'
 import { DrawControl } from "./drawControl"
 import { LegendControl } from "./legendControl"
 import { AutoZoomControl } from "./autoZoomControl"
+import { StyleSelector } from "./styleSelector"
 import { MapboxGeocoderControl } from "./mapboxGeocoderControl"
 
 import * as mapboxgl from "mapbox-gl"
@@ -73,6 +74,7 @@ export class MapboxMap implements IVisual {
     private map: any;
     private geocoder: MapboxGeocoderControl;
     private autoZoomControl: AutoZoomControl;
+    private styleSelector: StyleSelector;
     private navigationControl: mapboxgl.NavigationControl;
     private controlsPopulated: boolean;
     private roleMap: any;
@@ -104,6 +106,7 @@ export class MapboxMap implements IVisual {
         this.controlsPopulated = false;
         this.navigationControl = new mapboxgl.NavigationControl();
         this.autoZoomControl = new AutoZoomControl(this.host);
+        this.styleSelector = new StyleSelector(this.host);
         this.drawControl = new DrawControl(this.filter)
         this.tooltipServiceWrapper = createTooltipServiceWrapper(options.host.tooltipService, options.element);
     }
@@ -385,6 +388,9 @@ export class MapboxMap implements IVisual {
             this.autoZoomControl.setPin(!this.settings.api.autozoom);
         }
 
+        // Update style options
+        this.styleSelector.update(this.settings)
+
         if (mapboxgl.accessToken != this.settings.api.accessToken) {
             // @ts-ignore
             mapboxgl.accessToken = this.settings.api.accessToken;
@@ -490,6 +496,9 @@ export class MapboxMap implements IVisual {
 
     private manageControlElements() {
         if (this.settings.api.mapboxControls) {
+            if (this.settings.api.showStyleSelector && !this.styleSelector.isAdded()) {
+                this.map.addControl(this.styleSelector);
+            }
             if (!this.controlsPopulated) {
                 this.map.addControl(this.navigationControl);
                 this.map.addControl(this.drawControl);
@@ -503,6 +512,9 @@ export class MapboxMap implements IVisual {
                 this.map.removeControl(this.autoZoomControl);
                 this.controlsPopulated = false;
             }
+        }
+        if ((!this.settings.api.showStyleSelector || !this.settings.api.mapboxControls) && this.styleSelector.isAdded()) {
+            this.map.removeControl(this.styleSelector);
         }
     }
 

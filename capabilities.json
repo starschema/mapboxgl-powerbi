@@ -255,6 +255,14 @@
               "displayName": "Map Style",
               "displayNameKey": "map_style"
             },
+            "showStyleSelector": {
+              "displayName": "Show style selector",
+              "displayNameKey": "showStyleSelector",
+              "description": "Toggle style selector control on/off",
+              "type": {
+                "bool": true
+              }
+            },
             "labelPosition": {
               "displayName": "Label position",
               "displayNameKey": "labelPosition",
