@@ -37,7 +37,8 @@ import VisualObjectInstance = powerbiVisualsApi.VisualObjectInstance;
 import DataView = powerbiVisualsApi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbiVisualsApi.VisualObjectInstanceEnumerationObject;
 
-import { featureCollection } from "@turf/helpers"
+import { featureCollection, BBox } from "@turf/helpers"
+
 import bbox from "@turf/bbox"
 import bboxPolygon from "@turf/bbox-polygon"
 
@@ -111,6 +112,27 @@ export class MapboxMap implements IVisual {
         this.tooltipServiceWrapper = createTooltipServiceWrapper(options.host.tooltipService, options.element);
     }
 
+    updateZoom(settings: MapboxSettings) {
+        if (settings.api.autozoom) {
+            const bounds = this.layers.map(layer => {
+                return layer.getBounds(settings);
+            }).reduce((acc, bounds) => {
+                if (!bounds) {
+                    return acc;
+                }
+                if (!acc) {
+                    return bounds
+                }
+                const combined = featureCollection([
+                    bboxPolygon(acc),
+                    bboxPolygon(bounds)
+                bounds
+                return bbox(combined)
+            });
+            zoomToData(this.map, bounds);
+        }
+    }
+
     onUpdate(map, settings, updatedHandler: Function) {
         try {
             let prevId = calculateLabelPosition(settings, map)
@@ -121,24 +143,7 @@ export class MapboxMap implements IVisual {
 
             this.updateLegend(settings)
 
-            if (settings.api.autozoom) {
-                const bounds = this.layers.map(layer => {
-                    return layer.getBounds(settings);
-                }).reduce((acc, bounds) => {
-                    if (!bounds) {
-                        return acc;
-                    }
-                    if (!acc) {
-                        return bounds
-                    }
-                    const combined = featureCollection([
-                        bboxPolygon(bbox(acc)),
-                        bboxPolygon(bbox(bounds))
-                    ]);
-                    return bbox(combined)
-                });
-                zoomToData(map, bounds);
-            }
+            this.updateZoom(settings)
         }
         catch (error) {
             console.error("OnUpdate failed:", error)
@@ -289,7 +294,7 @@ export class MapboxMap implements IVisual {
 
         for (let id in datasources) {
             let datasource = datasources[id];
-            datasource.update(this.map, features, this.roleMap, this.settings);
+            datasource.update(this, features, this.roleMap, this.settings);
         };
 
         this.map.on('zoom', () => {

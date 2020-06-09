@@ -58,8 +58,9 @@ export class Choropleth extends Datasource {
         return this.choroplethData;
     }
 
-    update(map, features, roleMap: RoleMap, settings: MapboxSettings) {
-        super.update(map, features, roleMap, settings)
+    update(visual, features, roleMap: RoleMap, settings: MapboxSettings) {
+        super.update(visual, features, roleMap, settings)
+        const map = visual.getMap()
         let featureNames = {}
 
         let featuresByLocation = [];
@@ -172,7 +173,7 @@ export class Choropleth extends Datasource {
                                 const source = map.getSource(this.ID)
                                 this.bounds = source.bounds
                                 console.log('Waiting for getting bounds of desired features has timed out. Falling back to source bounds:', this.bounds)
-                                zoomToData(map, this.bounds)
+                                visual.updateZoom(settings)
                                 map.on('zoomend', sourceLoaded)
                                 return
                             }
@@ -187,7 +188,7 @@ export class Choropleth extends Datasource {
                     map.off('sourcedata', sourceLoaded)
                     map.off('zoomend', sourceLoaded)
                     clearInterval(boundsPoll)
-                    zoomToData(map, this.bounds)
+                    visual.updateZoom(settings)
                 }
             }
 

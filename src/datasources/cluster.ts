@@ -50,8 +50,9 @@ export class Cluster extends Datasource {
         }
     }
 
-    update(map, features, roleMap, settings) {
-        super.update(map, features, roleMap, settings)
+    update(visual, features, roleMap, settings) {
+        super.update(visual, features, roleMap, settings)
+        const map = visual.getMap()
         const source: any = map.getSource('clusterData');
         this.cluster.load(features);
         this.handleZoom(map, settings)

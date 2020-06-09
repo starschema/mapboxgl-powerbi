@@ -1,5 +1,5 @@
 import { ChoroplethSettings } from "../settings"
-import { featureCollection } from "@turf/helpers"
+import { featureCollection, BBox } from "@turf/helpers"
 import bbox from "@turf/bbox"
 import bboxPolygon from "@turf/bbox-polygon"
 
@@ -8,7 +8,7 @@ export class BBoxCache {
     private usedSourceId: string
     private usedSettings: ChoroplethSettings
 
-    public getBBox(featureNames: string[]): number[] {
+    public getBBox(featureNames: string[]): BBox {
         const features = featureNames.map(featureName => this.cache[featureName])
                                      .filter(feature => feature != null)
         if (!features.length) {

@@ -37,8 +37,9 @@ export class Raster extends Datasource {
         }
     }
 
-    update(map, features, roleMap, settings) {
-        super.update(map, features, roleMap, settings)
+    update(visual, features, roleMap, settings) {
+        super.update(visual, features, roleMap, settings)
+        const map = visual.getMap()
         const source: any = map.getSource('raster');
     }
 }

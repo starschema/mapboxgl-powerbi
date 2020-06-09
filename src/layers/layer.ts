@@ -2,7 +2,7 @@ import powerbiVisualsApi from "powerbi-visuals-api";
 import * as formatting from "powerbi-visuals-utils-formattingutils"
 const valueFormatter = formatting.valueFormatter;
 import * as tooltip from "powerbi-visuals-utils-tooltiputils"
-
+import { BBox } from "@turf/helpers"
 import * as chroma from "chroma-js"
 
 import { ClassificationMethod, filterValues, getBreaks, getClassCount, Limits, calculateLabelPosition } from "../mapboxUtils"
@@ -31,11 +31,11 @@ export abstract class Layer {
 
     updateSource(features, roleMap, settings) {
         if (settings[this.id].show) {
-            this.source.update(this.parent.getMap(), features, roleMap, settings);
+            this.source.update(this.parent, features, roleMap, settings);
         }
     }
 
-    getBounds(settings) : any[] {
+    getBounds(settings) : BBox {
         if (settings[this.id].show) {
             return this.source.getBounds();
         }

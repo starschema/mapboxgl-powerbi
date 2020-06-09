@@ -1,7 +1,9 @@
+import { BBox } from "@turf/helpers"
 import { Limits } from "../mapboxUtils"
+import { MapboxMap } from "../visual"
 
 export abstract class Datasource {
-    protected bounds: any[];
+    protected bounds: BBox;
     private references: Object;
     public ID: string;
 
@@ -31,8 +33,8 @@ export abstract class Datasource {
         this.references[layerId] = true;
     }
 
-    update(map, features, roleMap, settings) {}
-    getBounds() : any[] { return this.bounds }
+    update(map: MapboxMap, features, roleMap, settings) {}
+    getBounds() : BBox { return this.bounds }
     handleZoom(map, settings) : boolean {
         return false;
     }

@@ -51,8 +51,9 @@ export class Point extends Datasource {
         }
     }
 
-    update(map, features, roleMap, settings) {
-        super.update(map, features, roleMap, settings)
+    update(visual, features, roleMap, settings) {
+        super.update(visual, features, roleMap, settings)
+        const map = visual.getMap()
         const fCollection = featureCollection(features);
         const source: any = map.getSource('data');
         source.setData(fCollection);
