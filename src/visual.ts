@@ -126,7 +126,7 @@ export class MapboxMap implements IVisual {
                 const combined = featureCollection([
                     bboxPolygon(acc),
                     bboxPolygon(bounds)
-                bounds
+                ]);
                 return bbox(combined)
             });
             zoomToData(this.map, bounds);
