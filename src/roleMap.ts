@@ -51,6 +51,11 @@ export class RoleMap {
         return this.map['tooltips'];
     }
 
+    symbol() : string {
+        const col = this.getColumn('symbol', 'circle');
+        return col ? col.displayName : ""
+    }
+
     get(role: string, index: number) {
         if (this.map[role] && this.map[role].length > index) {
             return this.map[role][index];

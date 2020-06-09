@@ -100,6 +100,12 @@
       ]
     },
     {
+      "name": "symbol",
+      "kind": "Measure",
+      "displayName": "Symbol",
+      "description": "URL of the symbols to display for the data points"
+    },
+    {
       "name": "tooltips",
       "kind": "Measure",
       "displayName": "Tooltips",
@@ -126,6 +132,9 @@
             "max": 3
           },
           "cluster": {
+            "max": 1
+          },
+          "symbol": {
             "max": 1
           }
         }
@@ -170,6 +179,11 @@
             {
               "for": {
                 "in": "cluster"
+              }
+            },
+            {
+              "for": {
+                "in": "symbol"
               }
             },
             {

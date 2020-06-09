@@ -47,9 +47,6 @@ export class Symbol extends Layer {
             id: Symbol.ID,
             source: 'data',
             type: 'symbol',
-            layout: {
-                'icon-image': 'symbol',
-            }
         });
 
         const zeroFilter = ["==", latitude, ""]
@@ -58,9 +55,6 @@ export class Symbol extends Layer {
             type: 'symbol',
             source: 'data',
             filter: zeroFilter,
-            layout: {
-                'icon-image': 'symbol',
-            }
         });
 
         const lastId = Symbol.LayerOrder.reduce((prevId, layerId) => {
@@ -70,6 +64,25 @@ export class Symbol extends Layer {
 
         map.setPaintProperty(Symbol.HighlightID, 'icon-opacity', 1);
         map.setPaintProperty(Symbol.HighlightID, 'icon-color', settings.symbol.highlightColor)
+
+        map.on('styleimagemissing', (e) => {
+            map.loadImage(
+                e.id,
+                (error, image) => {
+                    if (error) {
+                        console.error("Error while loading image: ", error)
+                        return
+                    }
+
+                    if (map.hasImage(e.id)) {
+                        map.removeImage(e.id, image)
+                    }
+
+                    map.addImage(e.id, image, {sdf: settings.symbol.sdf})
+                }
+            )
+        });
+
 
         return lastId
     }
@@ -146,21 +159,6 @@ export class Symbol extends Layer {
     applySettings(settings: MapboxSettings, roleMap: RoleMap, prevId: string): string {
         const lastId = super.applySettings(settings, roleMap, prevId);
         const map = this.parent.getMap();
-        map.loadImage(
-            settings.symbol.url || constants.MAPBOX_ICON_BIG,
-            (error, image) => {
-                if (error) {
-                    console.error("Error while loading image: ", error)
-                    return
-                }
-
-                if (map.hasImage('symbol')) {
-                    map.removeImage('symbol', image)
-                }
-
-                map.addImage('symbol', image, {sdf: settings.symbol.sdf})
-            }
-        )
 
         if (settings.symbol.show) {
 
@@ -168,6 +166,16 @@ export class Symbol extends Layer {
             const sizeLimits = this.source.getSizeLimits(settings.symbol.sizeField)
             const sizeFieldName = sizeField ? sizeField.displayName : ""
             const sizes = getSizes(sizeLimits, map, settings.symbol.size / 100, settings.symbol.scaleFactor, sizeFieldName);
+
+            // Two coalesces as the inner one handles when roleMap.symbol is not set and hence it is empty string
+            // and get empty string returns null
+            // The outer one handles if neither symbol role nor settings.symbol.url are set in that
+            // case a default symbol is displayed.
+            const image = ["coalesce",
+                ["image", ["coalesce", ["get", roleMap.symbol()], settings.symbol.url]],
+                ["image", constants.MAPBOX_ICON_BIG],
+            ]
+            map.setLayoutProperty(Symbol.ID, 'icon-image', image);
             map.setLayoutProperty(Symbol.ID, 'icon-size', sizes);
             map.setLayoutProperty(Symbol.HighlightID, 'icon-size', sizes);
 
