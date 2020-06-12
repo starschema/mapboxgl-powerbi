@@ -457,15 +457,21 @@ export class MapboxMap implements IVisual {
         // If no legend is added to legendControl remove
         // legendControl at the end of the update
         let removeLegend = true;
+
+        if (!this.legend) {
+            this.legend = new LegendControl(settings.api.legendPosition)
+            this.map.addControl(this.legend)
+        } else {
+            this.legend.setPosition(settings.api.legendPosition)
+            this.map.removeControl(this.legend);
+            this.map.addControl(this.legend);
+        }
+
         this.layers.forEach(layer => {
             if (!layer.showLegend(settings, this.roleMap)) {
                 return
             }
 
-            if (!this.legend) {
-                this.legend = new LegendControl()
-                this.map.addControl(this.legend)
-            }
             layer.addLegend(this.legend, this.roleMap, settings);
 
             // Legend is added to legendControl

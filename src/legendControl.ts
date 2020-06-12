@@ -7,8 +7,13 @@ export class LegendControl implements mapboxgl.IControl {
     private map: mapboxgl.Map;
     private legendContainer: HTMLElement;
     private legends: { [key: string] : HTMLElement } = {};
+    private position: string;
 
     public static readonly DEFAULT_NUMBER_FORMAT = "0.##"
+
+    constructor(position: string) {
+        this.setPosition(position)
+    }
 
     removeLegends() {
         if (this.legendContainer) {
@@ -64,7 +69,11 @@ export class LegendControl implements mapboxgl.IControl {
     }
 
     getDefaultPosition(): string {
-        return 'bottom-right'; // TODO why not from settings?
+        return this.position
+    }
+
+    setPosition(position: string) {
+        this.position = position
     }
 
     createLegendElement(title: string, data: ColorStops, format: string): HTMLElement {
