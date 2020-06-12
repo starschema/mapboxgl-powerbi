@@ -176,6 +176,7 @@ export class Symbol extends Layer {
                 ["image", constants.MAPBOX_ICON_BIG],
             ]
             map.setLayoutProperty(Symbol.ID, 'icon-image', image);
+            map.setLayoutProperty(Symbol.HighlightID, 'icon-image', image);
             map.setLayoutProperty(Symbol.ID, 'icon-size', sizes);
             map.setLayoutProperty(Symbol.HighlightID, 'icon-size', sizes);
 
@@ -187,6 +188,7 @@ export class Symbol extends Layer {
             const colorFieldName = colorField ? colorField.displayName : ""
             let colorStyle = getColorStyle(isGradient, settings.symbol, colorFieldName, this.colorStops);
             map.setPaintProperty(Symbol.ID, 'icon-color', colorStyle)
+            map.setPaintProperty(Symbol.HighlightID, 'icon-color', settings.symbol.highlightColor)
 
             map.setLayerZoomRange(Symbol.ID, settings.symbol.minZoom, settings.symbol.maxZoom);
             map.setLayerZoomRange(Symbol.HighlightID, settings.symbol.minZoom, settings.symbol.maxZoom);

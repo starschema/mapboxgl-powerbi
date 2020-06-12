@@ -119,7 +119,7 @@ export class Filter {
             }
         }, 12, true);
 
-        const hoverHighLightLayers = [Circle.ID, Choropleth.ID, Choropleth.ExtrusionID, Symbol.ID];
+        const hoverHighLightLayers = [Circle.ID, Symbol.ID, Choropleth.ID, Choropleth.ExtrusionID];
         hoverHighLightLayers.map(hhLayer => {
             map.off('mousemove', hhLayer, mouseMoveHandler);
             map.on('mousemove', hhLayer, mouseMoveHandler);
