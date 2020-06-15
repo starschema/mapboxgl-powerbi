@@ -9,7 +9,7 @@ import { Symbol } from "./layers/symbol"
 import { Choropleth } from "./layers/choropleth"
 import { Layer } from "./layers/layer"
 import { FeatureOps } from "./featureOps"
-import { MapboxMap } from "./visual"
+import { MapboxMap } from "./MapboxMap"
 
 export class Filter {
     private box: HTMLElement;

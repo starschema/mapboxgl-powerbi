@@ -8,7 +8,7 @@ import { MapboxSettings, SymbolSettings } from "../settings"
 import { ColorStops } from "../legendControl"
 import { Sources } from "../datasources/sources"
 import { constants } from "../constants"
-import { MapboxMap } from "../visual"
+import { MapboxMap } from "../MapboxMap"
 
 export class Symbol extends Layer {
     private filter: Filter;

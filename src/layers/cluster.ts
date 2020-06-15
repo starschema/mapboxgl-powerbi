@@ -6,7 +6,7 @@ import { LegendControl } from "../legendControl"
 import { MapboxSettings, ClusterSettings } from "../settings"
 import { Sources } from "../datasources/sources"
 import { TooltipEventArgs } from "../tooltipServiceWrapper"
-import { MapboxMap } from "../visual"
+import { MapboxMap } from "../MapboxMap"
 
 export class Cluster extends Layer {
     public static readonly ID = 'cluster';

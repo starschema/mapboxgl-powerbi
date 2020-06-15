@@ -109,7 +109,7 @@ export class APISettings {
 
 
 export class CircleSettings {
-    public show: boolean = true;
+    public show: boolean = false;
     public colorField: number = 0;
     public sizeField: number = 0;
     public radius: number = 3;

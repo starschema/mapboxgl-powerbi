@@ -1,6 +1,6 @@
 import { BBox } from "@turf/helpers"
 import { Limits } from "../mapboxUtils"
-import { MapboxMap } from "../visual"
+import { MapboxMap } from "../MapboxMap"
 
 export abstract class Datasource {
     protected bounds: BBox;

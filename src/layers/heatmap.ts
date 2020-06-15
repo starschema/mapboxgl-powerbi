@@ -4,7 +4,7 @@ import { RoleMap } from "../roleMap"
 import { Layer } from "./layer"
 import { MapboxSettings  } from "../settings"
 import { Sources } from "../datasources/sources"
-import { MapboxMap } from "../visual"
+import { MapboxMap } from "../MapboxMap"
 
 export class Heatmap extends Layer {
     private static readonly ID = 'heatmap';

@@ -11,7 +11,7 @@ import { ColorStops, LegendControl } from "../legendControl"
 import { MapboxSettings, CircleSettings, ChoroplethSettings, ClusterSettings, SymbolSettings } from "../settings"
 import { Palette } from "../palette"
 import { TooltipEventArgs } from "../tooltipServiceWrapper"
-import { MapboxMap } from "../visual"
+import { MapboxMap } from "../MapboxMap"
 import { Datasource } from "../datasources/datasource"
 
 export abstract class Layer {

@@ -2,7 +2,7 @@ import powerbiVisualsApi from "powerbi-visuals-api";
 import { decorateLayer  } from "../mapboxUtils"
 import { Layer } from "./layer"
 import { Sources } from "../datasources/sources"
-import { MapboxMap } from "../visual"
+import { MapboxMap } from "../MapboxMap"
 import { MapboxSettings } from "../settings"
 import { RoleMap } from "../roleMap"
 

@@ -16,6 +16,6 @@
         ]
     },
     "files": [
-        "./src/visual.ts"
+        "./src/MapboxMap.ts"
     ]
 }
