@@ -1,18 +1,20 @@
 import * as formatting from "powerbi-visuals-utils-formattingutils"
 const valueFormatter = formatting.valueFormatter;
 
-export type ColorStops = {colorStop: number | string, color: string}[];
+export type ColorStops = { colorStop: number | string, color: string }[];
 
 export class LegendControl implements mapboxgl.IControl {
     private map: mapboxgl.Map;
     private legendContainer: HTMLElement;
-    private legends: { [key: string] : HTMLElement } = {};
+    private legends: { [key: string]: HTMLElement } = {};
     private position: string;
+    private opacity: number;
 
     public static readonly DEFAULT_NUMBER_FORMAT = "0.##"
 
-    constructor(position: string) {
+    constructor(position: string, opacity: number) {
         this.setPosition(position)
+        this.setOpacity(opacity)
     }
 
     removeLegends() {
@@ -46,7 +48,7 @@ export class LegendControl implements mapboxgl.IControl {
         if (!this.legendContainer) {
             this.legendContainer = document.createElement('div')
             this.legendContainer.className = 'mapboxgl-ctrl'
-            this.legendContainer.id="mapbox-legend-container"
+            this.legendContainer.id = "mapbox-legend-container"
         }
 
         Object.keys(this.legends).forEach(key => {
@@ -72,14 +74,23 @@ export class LegendControl implements mapboxgl.IControl {
         return this.position
     }
 
+    getDefaultOpacity(): number {
+        return this.opacity
+    }
+
     setPosition(position: string) {
         this.position = position
+    }
+
+    setOpacity(opacity: number) {
+        this.opacity = opacity / 100
     }
 
     createLegendElement(title: string, data: ColorStops, format: string): HTMLElement {
         const d = document;
         const legend = d.createElement('div');
         legend.setAttribute("class", "mapbox-legend mapboxgl-ctrl-group");
+        legend.setAttribute("style", `opacity: ${this.opacity};`);
 
         const titleElement = d.createElement('div');
         const titleText = d.createTextNode(title);
@@ -87,7 +98,7 @@ export class LegendControl implements mapboxgl.IControl {
         titleElement.appendChild(titleText);
         legend.appendChild(titleElement)
 
-        data.forEach(({colorStop, color}) => {
+        data.forEach(({ colorStop, color }) => {
             // Create line item
             const item = d.createElement('div');
 

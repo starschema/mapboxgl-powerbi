@@ -76,6 +76,7 @@ export class APISettings {
     public mapboxControls: boolean = true;
     public apiUrl: string = "https://api.mapbox.com"
     public legendPosition: string = "bottom-right";
+    public legendTransparency: number = 80;
     public labelPosition: string = "above";
 
     public enumerateObjectInstances(objectEnumeration) {
