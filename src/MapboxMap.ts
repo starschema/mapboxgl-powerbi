@@ -53,7 +53,7 @@ import { MapboxGeocoderControl } from "./mapboxGeocoderControl"
 
 import * as mapboxgl from "mapbox-gl"
 import { MapboxSettings, ChoroplethSettings } from "./settings";
-import { zoomToData, calculateLabelPosition  } from "./mapboxUtils";
+import { zoomToData, calculateLabelPosition } from "./mapboxUtils";
 import { ITooltipServiceWrapper, createTooltipServiceWrapper, TooltipEventArgs } from "./tooltipServiceWrapper"
 import { mapboxConverter } from "./mapboxConverter";
 import { Templates } from "./templates";
@@ -136,10 +136,10 @@ export class MapboxMap implements IVisual {
     onUpdate(map, settings, updatedHandler: Function) {
         try {
             let prevId = calculateLabelPosition(settings, map)
-            this.layers.sort( (a,b) => b.layerIndex() - a.layerIndex())
-            .map(layer => {
-                prevId = layer.applySettings(settings, this.roleMap, prevId);
-            });
+            this.layers.sort((a, b) => b.layerIndex() - a.layerIndex())
+                .map(layer => {
+                    prevId = layer.applySettings(settings, this.roleMap, prevId);
+                });
 
             this.updateLegend(settings)
 
@@ -225,8 +225,8 @@ export class MapboxMap implements IVisual {
 
         // Hide div and remove any child elements
         this.errorDiv.setAttribute("style", "display: none;");
-        while (this.errorDiv.hasChildNodes()) { 
-            this.errorDiv.removeChild(this.errorDiv.firstChild) 
+        while (this.errorDiv.hasChildNodes()) {
+            this.errorDiv.removeChild(this.errorDiv.firstChild)
         }
 
         // Check for Access Token
@@ -278,7 +278,7 @@ export class MapboxMap implements IVisual {
     public hideTooltip(): void {
         this.tooltipServiceWrapper.hide(true)
     }
-   
+
     public updateLayers(dataView: DataView) {
         const features = mapboxConverter.convert(dataView, this.roleMap);
 
@@ -324,13 +324,13 @@ export class MapboxMap implements IVisual {
                 () => this.roleMap.tooltips(),
                 (tooltipEvent: TooltipEventArgs<number>) => {
                     return layer.handleTooltip(tooltipEvent, this.roleMap, this.settings);
-            });
+                });
         });
 
         this.onUpdate(this.map, this.settings, this.updatedHandler);
     }
 
-    private updateCurrentLevel(settings : ChoroplethSettings, roleMap : RoleMap) {
+    private updateCurrentLevel(settings: ChoroplethSettings, roleMap: RoleMap) {
         // TODO when we have more values in location, that means, Expand all down 1 level was selected.
         // In that case all levels of information is in the data but in different fields
         // maybe we should take them into consideration when matchin choropleth regions with the data.
@@ -338,7 +338,7 @@ export class MapboxMap implements IVisual {
             let location_index = 0;
             let locations = roleMap.getAll('location');
             if (locations) {
-                locations.map( col => {
+                locations.map(col => {
                     if (col.rolesIndex.location[0] > location_index) { // TODO
                         location_index = col.rolesIndex.location[0]
                     }
@@ -346,7 +346,7 @@ export class MapboxMap implements IVisual {
             }
 
             settings.currentLevel = location_index + 1;
-        } catch( e) {
+        } catch (e) {
             console.log(e)
         }
     }
@@ -402,7 +402,33 @@ export class MapboxMap implements IVisual {
         }
 
 
-        let style = this.settings.api.style == 'custom' ? this.settings.api.styleUrl : this.settings.api.style;
+        let style: string;
+        switch (this.settings.api.style) {
+            case 'custom1': {
+                style = this.settings.api.styleUrl1;
+                break;
+            }
+            case 'custom2': {
+                style = this.settings.api.styleUrl2;
+                break;
+            }
+            case 'custom3': {
+                style = this.settings.api.styleUrl3;
+                break;
+            }
+            case 'custom4': {
+                style = this.settings.api.styleUrl4;
+                break;
+            }
+            case 'custom5': {
+                style = this.settings.api.styleUrl5;
+                break;
+            }
+            default: {
+                style = this.settings.api.style;
+                break;
+            }
+        }
         if (this.mapStyle == '' || this.mapStyle != style) {
 
             // This should run only once but it runs with different dataView
@@ -444,8 +470,7 @@ export class MapboxMap implements IVisual {
             this.legend.removeLegends()
         }
 
-        if (!this.roleMap)
-        {
+        if (!this.roleMap) {
             if (this.legend) {
                 this.map.removeControl(this.legend)
                 this.legend = null
@@ -529,17 +554,17 @@ export class MapboxMap implements IVisual {
         }
     }
 
-        /**
-        * This function returns the values to be displayed in the property pane for each object.
-        * Usually it is a bind pass of what the property pane gave you, but sometimes you may want to do
-        * validation and return other values/defaults
-        */
-        public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
-            if (options.objectName == 'colorSelector') {
-                return this.palette.enumerateObjectInstances(options);
-            } else {
-                MapboxSettings.roleMap = this.roleMap;
-                return MapboxSettings.enumerateObjectInstances(this.settings || MapboxSettings.getDefault(), options);
-            }
+    /**
+    * This function returns the values to be displayed in the property pane for each object.
+    * Usually it is a bind pass of what the property pane gave you, but sometimes you may want to do
+    * validation and return other values/defaults
+    */
+    public enumerateObjectInstances(options: EnumerateVisualObjectInstancesOptions): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
+        if (options.objectName == 'colorSelector') {
+            return this.palette.enumerateObjectInstances(options);
+        } else {
+            MapboxSettings.roleMap = this.roleMap;
+            return MapboxSettings.enumerateObjectInstances(this.settings || MapboxSettings.getDefault(), options);
         }
+    }
 }

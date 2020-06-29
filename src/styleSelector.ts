@@ -13,6 +13,7 @@ export class StyleSelector implements mapboxgl.IControl {
     private container: HTMLElement;
     private select: HTMLSelectElement;
     private added: boolean;
+    private settings: MapboxSettings;
 
     constructor(host) {
         this.host = host;
@@ -58,8 +59,25 @@ export class StyleSelector implements mapboxgl.IControl {
     }
 
     public update(settings: MapboxSettings) {
+        this.settings = settings;
         if (this.select) {
-            this.select.value = settings.api.style;
+            this.container.removeChild(this.select)
+            this.select = this.createControl(this.getClass(), this.getTitle(),
+                (e) => {
+                    this.select.className = this.getClass();
+                    this.select.title = this.getTitle();
+
+                    this.host.persistProperties(<VisualObjectInstancesToPersist>{
+                        merge: [{
+                            objectName: "api",
+                            selector: null,
+                            properties: {
+                                style: e.value,
+                            }
+                        }]
+                    })
+                });
+            this.select.value = this.settings.api.style;
         }
     }
 
@@ -69,12 +87,57 @@ export class StyleSelector implements mapboxgl.IControl {
         select.title = ariaLabel;
         select.addEventListener('change', () => fn(select));
 
-        capabilities.objects.api.properties.style.type.enumeration.filter( style => style.value !== "custom")
-        .map ( style => {
-            const option = this.createElement('option', '', select);
-            option.value = style.value;
-            option.innerText = style.displayName;
-        });
+        capabilities.objects.api.properties.style.type.enumeration
+            .map(style => {
+                switch (style.value) {
+                    case 'custom1': {
+                        if (this.settings.api.styleUrl1 != "" && this.settings.api.styleName1 != "") {
+                            const option = this.createElement('option', '', select);
+                            option.value = style.value;
+                            option.innerText = this.settings.api.styleName1;
+                        }
+                        break;
+                    }
+                    case 'custom2': {
+                        if (this.settings.api.styleUrl2 != "" && this.settings.api.styleName2 != "") {
+                            const option = this.createElement('option', '', select);
+                            option.value = style.value;
+                            option.innerText = this.settings.api.styleName2;
+                        }
+                        break;
+                    }
+                    case 'custom3': {
+                        if (this.settings.api.styleUrl3 != "" && this.settings.api.styleName3 != "") {
+                            const option = this.createElement('option', '', select);
+                            option.value = style.value;
+                            option.innerText = this.settings.api.styleName3;
+                        }
+                        break;
+                    }
+                    case 'custom4': {
+                        if (this.settings.api.styleUrl4 != "" && this.settings.api.styleName4 != "") {
+                            const option = this.createElement('option', '', select);
+                            option.value = style.value;
+                            option.innerText = this.settings.api.styleName4;
+                        }
+                        break;
+                    }
+                    case 'custom5': {
+                        if (this.settings.api.styleUrl5 != "" && this.settings.api.styleName5 != "") {
+                            const option = this.createElement('option', '', select);
+                            option.value = style.value;
+                            option.innerText = this.settings.api.styleName5;
+                        }
+                        break;
+                    }
+                    default: {
+                        const option = this.createElement('option', '', select);
+                        option.value = style.value;
+                        option.innerText = style.displayName;
+                        break;
+                    }
+                }
+            });
 
         return select;
     }

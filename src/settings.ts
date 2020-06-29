@@ -33,41 +33,50 @@ import powerbiVisualsApi from "powerbi-visuals-api";
 import { RoleMap } from "./roleMap"
 
 export class MapboxSettings extends DataViewObjectsParser {
-        public static roleMap: RoleMap;
-        public api: APISettings = new APISettings();
-        public geocoder: GeocoderSettings = new GeocoderSettings();
-        public cluster: ClusterSettings = new ClusterSettings();
-        public heatmap: HeatmapSettings = new HeatmapSettings();
-        public circle: CircleSettings = new CircleSettings();
-        public choropleth: ChoroplethSettings = new ChoroplethSettings();
-        public raster: RasterSettings = new RasterSettings();
-        public symbol: SymbolSettings = new SymbolSettings();
+    public static roleMap: RoleMap;
+    public api: APISettings = new APISettings();
+    public geocoder: GeocoderSettings = new GeocoderSettings();
+    public cluster: ClusterSettings = new ClusterSettings();
+    public heatmap: HeatmapSettings = new HeatmapSettings();
+    public circle: CircleSettings = new CircleSettings();
+    public choropleth: ChoroplethSettings = new ChoroplethSettings();
+    public raster: RasterSettings = new RasterSettings();
+    public symbol: SymbolSettings = new SymbolSettings();
 
-        public static enumerateObjectInstances(
-            dataViewObjectParser: DataViewObjectsParser,
-            options: powerbiVisualsApi.EnumerateVisualObjectInstancesOptions,
-        ): powerbiVisualsApi.VisualObjectInstanceEnumeration {
-            let settings: MapboxSettings = <MapboxSettings>dataViewObjectParser;
-            let instanceEnumeration = DataViewObjectsParser.enumerateObjectInstances(dataViewObjectParser, options);
+    public static enumerateObjectInstances(
+        dataViewObjectParser: DataViewObjectsParser,
+        options: powerbiVisualsApi.EnumerateVisualObjectInstancesOptions,
+    ): powerbiVisualsApi.VisualObjectInstanceEnumeration {
+        let settings: MapboxSettings = <MapboxSettings>dataViewObjectParser;
+        let instanceEnumeration = DataViewObjectsParser.enumerateObjectInstances(dataViewObjectParser, options);
 
-            switch (options.objectName) {
-                case 'api':
-                case 'circle':
-                case 'symbol':
-                case 'choropleth': {
-                    return settings[options.objectName].enumerateObjectInstances(instanceEnumeration);
-                }
-                default: {
-                    return instanceEnumeration;
-                }
+        switch (options.objectName) {
+            case 'api':
+            case 'circle':
+            case 'symbol':
+            case 'choropleth': {
+                return settings[options.objectName].enumerateObjectInstances(instanceEnumeration);
+            }
+            default: {
+                return instanceEnumeration;
             }
         }
+    }
 }
 
 export class APISettings {
     public accessToken: string = "";
     public style: string = "mapbox:\/\/styles\/mapbox\/light-v10?optimize=true";
-    public styleUrl: string = "";
+    public styleName1: string = "";
+    public styleName2: string = "";
+    public styleName3: string = "";
+    public styleName4: string = "";
+    public styleName5: string = "";
+    public styleUrl1: string = "";
+    public styleUrl2: string = "";
+    public styleUrl3: string = "";
+    public styleUrl4: string = "";
+    public styleUrl5: string = "";
     public showStyleSelector: boolean = false;
     public zoom: number = 0;
     public startLong: number = 0;
@@ -82,13 +91,46 @@ export class APISettings {
         let instances = objectEnumeration.instances;
         let properties = instances[0].properties;
 
-        // Hide / show custom map style URL control
-        if (properties.style != 'custom') {
-            properties.styleUrl = "";
-            delete properties.styleUrl
-        } else if (!properties.styleUrl) {
-            properties.styleUrl = "";
+        delete properties.styleName1
+        delete properties.styleUrl1
+        delete properties.styleName2
+        delete properties.styleUrl2
+        delete properties.styleName3
+        delete properties.styleUrl3
+        delete properties.styleName4
+        delete properties.styleUrl4
+        delete properties.styleName5
+        delete properties.styleUrl5
+
+        switch (properties.style) {
+            case 'custom1': {
+                properties.styleName1 = this.styleName1;
+                properties.styleUrl1 = this.styleUrl1;
+                break;
+            }
+            case 'custom2': {
+                properties.styleName2 = this.styleName2;
+                properties.styleUrl2 = this.styleUrl2;
+                break;
+            }
+            case 'custom3': {
+                properties.styleName3 = this.styleName3;
+                properties.styleUrl3 = this.styleUrl3;
+                break;
+            }
+            case 'custom4': {
+                properties.styleName4 = this.styleName4;
+                properties.styleUrl4 = this.styleUrl4;
+                break;
+            }
+            case 'custom5': {
+                properties.styleName5 = this.styleName5;
+                properties.styleUrl5 = this.styleUrl5;
+                break;
+            }
+            default:
         }
+
         // If autozoom is enabled, there is no point in initial zoom and position
         if (properties.autozoom) {
             delete properties.zoom
@@ -100,11 +142,11 @@ export class APISettings {
     }
 }
 
-    export class GeocoderSettings {
-        public show: boolean = true;
-        public dropPin: boolean = true;
-        public zoom: number = 10;
-    }
+export class GeocoderSettings {
+    public show: boolean = true;
+    public dropPin: boolean = true;
+    public zoom: number = 10;
+}
 
 
 
@@ -142,13 +184,14 @@ export class CircleSettings {
             delete properties.maxValue;
         }
 
-        instances[0].validValues = {...instances[0].validValues,
+        instances[0].validValues = {
+            ...instances[0].validValues,
             colorField: ["-1"],
             sizeField: ["-1"],
         }
 
         let colorFields = MapboxSettings.roleMap.getAll("color");
-        colorFields.map( (field, index) => {
+        colorFields.map((field, index) => {
             instances[0].validValues.colorField.push(`${index}`)
         });
         if (properties.colorField > (colorFields.length - 1)) {
@@ -156,7 +199,7 @@ export class CircleSettings {
         }
 
         let sizeFields = MapboxSettings.roleMap.getAll("size");
-        sizeFields.map( (field, index) => {
+        sizeFields.map((field, index) => {
             instances[0].validValues.sizeField.push(`${index}`)
         });
         if (properties.sizeField > (sizeFields.length - 1)) {
@@ -409,7 +452,7 @@ export class ChoroplethSettings {
         }
 
         let colorFields = MapboxSettings.roleMap.getAll("color");
-        colorFields.map( (field, index) => {
+        colorFields.map((field, index) => {
             instances[0].validValues.colorField.push(`${index}`)
         });
         if (properties.colorField > (colorFields.length - 1)) {
@@ -417,7 +460,7 @@ export class ChoroplethSettings {
         }
 
         let sizeFields = MapboxSettings.roleMap.getAll("size");
-        sizeFields.map( (field, index) => {
+        sizeFields.map((field, index) => {
             instances[0].validValues.sizeField.push(`${index}`)
         });
         if (properties.sizeField > (sizeFields.length - 1)) {
@@ -506,7 +549,8 @@ export class SymbolSettings {
         let instances = objectEnumeration.instances;
         let properties = instances[0].properties;
 
-        instances[0].validValues = {...instances[0].validValues,
+        instances[0].validValues = {
+            ...instances[0].validValues,
             minZoom: {
                 numberRange: {
                     min: 0,
@@ -538,7 +582,7 @@ export class SymbolSettings {
         }
 
         let colorFields = MapboxSettings.roleMap.getAll("color");
-        colorFields.map( (field, index) => {
+        colorFields.map((field, index) => {
             instances[0].validValues.colorField.push(`${index}`)
         });
         if (properties.colorField > (colorFields.length - 1)) {
@@ -546,7 +590,7 @@ export class SymbolSettings {
         }
 
         let sizeFields = MapboxSettings.roleMap.getAll("size");
-        sizeFields.map( (field, index) => {
+        sizeFields.map((field, index) => {
             instances[0].validValues.sizeField.push(`${index}`)
         });
         if (properties.sizeField > (sizeFields.length - 1)) {
