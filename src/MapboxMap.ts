@@ -401,35 +401,16 @@ export class MapboxMap implements IVisual {
             mapboxgl.accessToken = this.settings.api.accessToken;
         }
 
-
         let style: string;
-        switch (this.settings.api.style) {
-            case 'custom1': {
-                style = this.settings.api.styleUrl1;
-                break;
-            }
-            case 'custom2': {
-                style = this.settings.api.styleUrl2;
-                break;
-            }
-            case 'custom3': {
-                style = this.settings.api.styleUrl3;
-                break;
-            }
-            case 'custom4': {
-                style = this.settings.api.styleUrl4;
-                break;
-            }
-            case 'custom5': {
-                style = this.settings.api.styleUrl5;
-                break;
-            }
-            default: {
-                style = this.settings.api.style;
-                break;
-            }
+        if (this.settings.api.style.includes('custom')) {
+            let id = this.settings.api.style.split('custom')[1]
+            let styleUrl = 'styleUrl' + id
+            style = this.settings.api[styleUrl];
+        } else {
+            style = this.settings.api.style;
         }
-        if (this.mapStyle == '' || this.mapStyle != style) {
+
+        if (this.mapStyle == '' || this.mapStyle != style && style != '') {
 
             // This should run only once but it runs with different dataView
             // param every time so we need to set a different event handler on every

@@ -89,53 +89,20 @@ export class StyleSelector implements mapboxgl.IControl {
 
         capabilities.objects.api.properties.style.type.enumeration
             .map(style => {
-                switch (style.value) {
-                    case 'custom1': {
-                        if (this.settings.api.styleUrl1 != "" && this.settings.api.styleName1 != "") {
-                            const option = this.createElement('option', '', select);
-                            option.value = style.value;
-                            option.innerText = this.settings.api.styleName1;
-                        }
-                        break;
-                    }
-                    case 'custom2': {
-                        if (this.settings.api.styleUrl2 != "" && this.settings.api.styleName2 != "") {
-                            const option = this.createElement('option', '', select);
-                            option.value = style.value;
-                            option.innerText = this.settings.api.styleName2;
-                        }
-                        break;
-                    }
-                    case 'custom3': {
-                        if (this.settings.api.styleUrl3 != "" && this.settings.api.styleName3 != "") {
-                            const option = this.createElement('option', '', select);
-                            option.value = style.value;
-                            option.innerText = this.settings.api.styleName3;
-                        }
-                        break;
-                    }
-                    case 'custom4': {
-                        if (this.settings.api.styleUrl4 != "" && this.settings.api.styleName4 != "") {
-                            const option = this.createElement('option', '', select);
-                            option.value = style.value;
-                            option.innerText = this.settings.api.styleName4;
-                        }
-                        break;
-                    }
-                    case 'custom5': {
-                        if (this.settings.api.styleUrl5 != "" && this.settings.api.styleName5 != "") {
-                            const option = this.createElement('option', '', select);
-                            option.value = style.value;
-                            option.innerText = this.settings.api.styleName5;
-                        }
-                        break;
-                    }
-                    default: {
+                if (style.value.includes('custom')) {
+                    let id = style.value.split('custom')[1]
+                    let styleName = 'styleName' + id
+                    let styleUrl = 'styleUrl' + id
+
+                    if (this.settings.api[styleUrl] != "" && this.settings.api[styleName] != "") {
                         const option = this.createElement('option', '', select);
                         option.value = style.value;
-                        option.innerText = style.displayName;
-                        break;
+                        option.innerText = this.settings.api[styleName];
                     }
+                } else {
+                    const option = this.createElement('option', '', select);
+                    option.value = style.value;
+                    option.innerText = style.displayName;
                 }
             });
 
