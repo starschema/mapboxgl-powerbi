@@ -91,44 +91,15 @@ export class APISettings {
         let instances = objectEnumeration.instances;
         let properties = instances[0].properties;
 
-        delete properties.styleName1
-        delete properties.styleUrl1
-        delete properties.styleName2
-        delete properties.styleUrl2
-        delete properties.styleName3
-        delete properties.styleUrl3
-        delete properties.styleName4
-        delete properties.styleUrl4
-        delete properties.styleName5
-        delete properties.styleUrl5
-
-        switch (properties.style) {
-            case 'custom1': {
-                properties.styleName1 = this.styleName1;
-                properties.styleUrl1 = this.styleUrl1;
-                break;
+        for (let prop in properties) {
+            if (properties.style.includes('custom')) {
+                let id = properties.style.split('custom')[1]
+                if ((prop.includes('styleName') || prop.includes('styleUrl')) && !prop.includes(id)) {
+                    delete properties[prop]
+                }
+            } else if (prop.includes('styleUrl') || prop.includes('styleName')) {
+                delete properties[prop]
             }
-            case 'custom2': {
-                properties.styleName2 = this.styleName2;
-                properties.styleUrl2 = this.styleUrl2;
-                break;
-            }
-            case 'custom3': {
-                properties.styleName3 = this.styleName3;
-                properties.styleUrl3 = this.styleUrl3;
-                break;
-            }
-            case 'custom4': {
-                properties.styleName4 = this.styleName4;
-                properties.styleUrl4 = this.styleUrl4;
-                break;
-            }
-            case 'custom5': {
-                properties.styleName5 = this.styleName5;
-                properties.styleUrl5 = this.styleUrl5;
-                break;
-            }
-            default:
         }
 
         // If autozoom is enabled, there is no point in initial zoom and position
