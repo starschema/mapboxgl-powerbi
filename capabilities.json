@@ -303,6 +303,14 @@
                 ]
               }
             },
+            "legendTransparency": {
+              "displayName": "Transparency of legend",
+              "displayNameKey": "legendTransparency",
+              "description": "Set transparency for the legend box",
+              "type": {
+                "numeric": true
+              }
+            },
             "labelPosition": {
               "displayName": "Label position",
               "displayNameKey": "labelPosition",

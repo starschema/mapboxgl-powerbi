@@ -225,8 +225,8 @@ export class MapboxMap implements IVisual {
 
         // Hide div and remove any child elements
         this.errorDiv.setAttribute("style", "display: none;");
-        while (this.errorDiv.hasChildNodes()) { 
-            this.errorDiv.removeChild(this.errorDiv.firstChild) 
+        while (this.errorDiv.hasChildNodes()) {
+            this.errorDiv.removeChild(this.errorDiv.firstChild)
         }
 
         // Check for Access Token
@@ -278,7 +278,7 @@ export class MapboxMap implements IVisual {
     public hideTooltip(): void {
         this.tooltipServiceWrapper.hide(true)
     }
-   
+
     public updateLayers(dataView: DataView) {
         const features = mapboxConverter.convert(dataView, this.roleMap);
 
@@ -459,10 +459,11 @@ export class MapboxMap implements IVisual {
         let removeLegend = true;
 
         if (!this.legend) {
-            this.legend = new LegendControl(settings.api.legendPosition)
+            this.legend = new LegendControl(settings.api.legendPosition, settings.api.legendTransparency)
             this.map.addControl(this.legend)
         } else {
             this.legend.setPosition(settings.api.legendPosition)
+            this.legend.setOpacity(settings.api.legendTransparency)
             this.map.removeControl(this.legend);
             this.map.addControl(this.legend);
         }
