@@ -260,14 +260,124 @@
                     "displayNameKey": "navigation_preview_night_v4"
                   },
                   {
-                    "value": "custom",
-                    "displayName": "Custom...",
-                    "displayNameKey": "custom"
+                    "value": "custom1",
+                    "displayName": "Custom 1",
+                    "displayNameKey": "custom1"
+                  },
+                  {
+                    "value": "custom2",
+                    "displayName": "Custom 2",
+                    "displayNameKey": "custom2"
+                  },
+                  {
+                    "value": "custom3",
+                    "displayName": "Custom 3",
+                    "displayNameKey": "custom3"
+                  },
+                  {
+                    "value": "custom4",
+                    "displayName": "Custom 4",
+                    "displayNameKey": "custom4"
+                  },
+                  {
+                    "value": "custom5",
+                    "displayName": "Custom 5",
+                    "displayNameKey": "custom5"
                   }
                 ]
               },
               "displayName": "Map Style",
               "displayNameKey": "map_style"
+            },
+            "styleName1": {
+              "displayName": "Style name 1",
+              "displayNameKey": "styleName1",
+              "description": "Name of the custom style you created on your Mapbox account. See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleName2": {
+              "displayName": "Style name 2",
+              "displayNameKey": "styleName2",
+              "description": "Name of the custom style you created on your Mapbox account. See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleName3": {
+              "displayName": "Style name 3",
+              "displayNameKey": "styleName3",
+              "description": "Name of the custom style you created on your Mapbox account. See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleName4": {
+              "displayName": "Style name 4",
+              "displayNameKey": "styleName4",
+              "description": "Name of the custom style you created on your Mapbox account. See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleName5": {
+              "displayName": "Style name 5",
+              "displayNameKey": "styleName5",
+              "description": "Name of the custom style you created on your Mapbox account. See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleUrl1": {
+              "displayName": "Style URL 1",
+              "displayNameKey": "styleUrl1",
+              "description": "Mapbox URL to a custom style you created on your Mapbox account.  See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleUrl2": {
+              "displayName": "Style URL 2",
+              "displayNameKey": "styleUrl2",
+              "description": "Mapbox URL to a custom style you created on your Mapbox account.  See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleUrl3": {
+              "displayName": "Style URL 3",
+              "displayNameKey": "styleUrl3",
+              "description": "Mapbox URL to a custom style you created on your Mapbox account.  See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleUrl4": {
+              "displayName": "Style URL 4",
+              "displayNameKey": "styleUrl4",
+              "description": "Mapbox URL to a custom style you created on your Mapbox account.  See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
+            },
+            "styleUrl5": {
+              "displayName": "Style URL 5",
+              "displayNameKey": "styleUrl5",
+              "description": "Mapbox URL to a custom style you created on your Mapbox account.  See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
+              "type": {
+                "text": true
+              },
+              "suppressFormatPainterCopy": true
             },
             "showStyleSelector": {
               "displayName": "Show style selector",
@@ -329,15 +439,6 @@
                   }
                 ]
               }
-            },
-            "styleUrl": {
-              "displayName": "Style URL",
-              "displayNameKey": "styleUrl",
-              "description": "Mapbox URL to a custom style you created on your Mapbox account.  See https://www.mapbox.com/help/studio-manual/ for a guide on creating map styles in Mapbox Studio",
-              "type": {
-                "text": true
-              },
-              "suppressFormatPainterCopy": true
             },
             "zoom": {
               "displayName": "Zoom",

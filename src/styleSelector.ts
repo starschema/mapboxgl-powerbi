@@ -13,6 +13,7 @@ export class StyleSelector implements mapboxgl.IControl {
     private container: HTMLElement;
     private select: HTMLSelectElement;
     private added: boolean;
+    private settings: MapboxSettings;
 
     constructor(host) {
         this.host = host;
@@ -58,8 +59,25 @@ export class StyleSelector implements mapboxgl.IControl {
     }
 
     public update(settings: MapboxSettings) {
+        this.settings = settings;
         if (this.select) {
-            this.select.value = settings.api.style;
+            this.container.removeChild(this.select)
+            this.select = this.createControl(this.getClass(), this.getTitle(),
+                (e) => {
+                    this.select.className = this.getClass();
+                    this.select.title = this.getTitle();
+
+                    this.host.persistProperties(<VisualObjectInstancesToPersist>{
+                        merge: [{
+                            objectName: "api",
+                            selector: null,
+                            properties: {
+                                style: e.value,
+                            }
+                        }]
+                    })
+                });
+            this.select.value = this.settings.api.style;
         }
     }
 
@@ -69,12 +87,24 @@ export class StyleSelector implements mapboxgl.IControl {
         select.title = ariaLabel;
         select.addEventListener('change', () => fn(select));
 
-        capabilities.objects.api.properties.style.type.enumeration.filter( style => style.value !== "custom")
-        .map ( style => {
-            const option = this.createElement('option', '', select);
-            option.value = style.value;
-            option.innerText = style.displayName;
-        });
+        capabilities.objects.api.properties.style.type.enumeration
+            .map(style => {
+                if (style.value.includes('custom')) {
+                    let id = style.value.split('custom')[1]
+                    let styleName = 'styleName' + id
+                    let styleUrl = 'styleUrl' + id
+
+                    if (this.settings.api[styleUrl] != "" && this.settings.api[styleName] != "") {
+                        const option = this.createElement('option', '', select);
+                        option.value = style.value;
+                        option.innerText = this.settings.api[styleName];
+                    }
+                } else {
+                    const option = this.createElement('option', '', select);
+                    option.value = style.value;
+                    option.innerText = style.displayName;
+                }
+            });
 
         return select;
     }
