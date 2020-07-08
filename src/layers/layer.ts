@@ -271,7 +271,7 @@ export abstract class Layer {
     ): void
     {
         const id = this.getId();
-        const title = roleMap.color(this)
+        const title = roleMap.colorByColorField(settings[this.id].colorField)
         const colorStops = this.getColorStops();
         const format = roleMap.getColumn('color', this.getId()).format;
         legend.addLegend(id, title, colorStops, format);
