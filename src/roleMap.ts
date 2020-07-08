@@ -27,6 +27,11 @@ export class RoleMap {
         return col ? col.displayName : "";
     }
 
+    colorByColorField(i: number) : string {
+        const col = this.getColumnValueByIndex('color', i);
+        return col ? col.displayName : "";
+    }
+
     location() : string {
         const col = this.getColumn('location', Choropleth.ID);
         return col ? col.displayName : "";
@@ -82,6 +87,14 @@ export class RoleMap {
         }
 
         return this.map[role][0];
+    }
+
+    getColumnValueByIndex(role: string, i: number) : Column {
+        if (!this.map[role] || this.map[role].length <= i) {
+            return null;
+        }
+
+        return this.map[role][i];
     }
 }
 
