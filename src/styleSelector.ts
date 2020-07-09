@@ -25,22 +25,6 @@ export class StyleSelector implements mapboxgl.IControl {
         this.map = map;
         this.container = document.createElement('div');
         this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
-
-        this.select = this.createControl(this.getClass(), this.getTitle(),
-            (e) => {
-                this.select.className = this.getClass();
-                this.select.title = this.getTitle();
-
-                this.host.persistProperties(<VisualObjectInstancesToPersist>{
-                    merge: [{
-                        objectName: "api",
-                        selector: null,
-                        properties: {
-                            style: e.value,
-                        }
-                    }]
-                })
-            });
         return this.container;
     }
 
@@ -59,9 +43,11 @@ export class StyleSelector implements mapboxgl.IControl {
     }
 
     public update(settings: MapboxSettings) {
-        this.settings = settings;
-        if (this.select) {
-            this.container.removeChild(this.select)
+        if (this.added) {
+            this.settings = settings;
+            if (this.container.hasChildNodes()) {
+                this.container.removeChild(this.select);
+            }
             this.select = this.createControl(this.getClass(), this.getTitle(),
                 (e) => {
                     this.select.className = this.getClass();
