@@ -49,6 +49,7 @@ import { DrawControl } from "./drawControl"
 import { LegendControl } from "./legendControl"
 import { AutoZoomControl } from "./autoZoomControl"
 import { StyleSelector } from "./styleSelector"
+import { FormatFieldHelper } from "./formatFieldHelper"
 import { MapboxGeocoderControl } from "./mapboxGeocoderControl"
 
 import * as mapboxgl from "mapbox-gl"
@@ -76,6 +77,7 @@ export class MapboxMap implements IVisual {
     private geocoder: MapboxGeocoderControl;
     private autoZoomControl: AutoZoomControl;
     private styleSelector: StyleSelector;
+    private formatFieldHelper: FormatFieldHelper;
     private navigationControl: mapboxgl.NavigationControl;
     private controlsPopulated: boolean;
     private roleMap: any;
@@ -108,6 +110,7 @@ export class MapboxMap implements IVisual {
         this.navigationControl = new mapboxgl.NavigationControl();
         this.autoZoomControl = new AutoZoomControl(this.host);
         this.styleSelector = new StyleSelector(this.host);
+        this.formatFieldHelper = new FormatFieldHelper();
         this.drawControl = new DrawControl(this.filter)
         this.tooltipServiceWrapper = createTooltipServiceWrapper(options.host.tooltipService, options.element);
     }
@@ -351,8 +354,6 @@ export class MapboxMap implements IVisual {
         }
     }
 
-
-
     public update(options: VisualUpdateOptions) {
         // TODO fetch all data instead of first page
         this.settings = MapboxMap.parseSettings(options && options.dataViews && options.dataViews[0]);
@@ -395,6 +396,7 @@ export class MapboxMap implements IVisual {
 
         // Update style options
         this.styleSelector.update(this.settings)
+        this.formatFieldHelper.update(this.settings)
 
         if (mapboxgl.accessToken != this.settings.api.accessToken) {
             // @ts-ignore
@@ -517,6 +519,9 @@ export class MapboxMap implements IVisual {
             if (this.settings.api.showStyleSelector && !this.styleSelector.isAdded()) {
                 this.map.addControl(this.styleSelector);
             }
+            if (this.settings.api.showFormatFieldHelper && !this.formatFieldHelper.isAdded()) {
+                this.map.addControl(this.formatFieldHelper);
+            }
             if (!this.controlsPopulated) {
                 this.map.addControl(this.navigationControl);
                 this.map.addControl(this.drawControl);
@@ -533,6 +538,9 @@ export class MapboxMap implements IVisual {
         }
         if ((!this.settings.api.showStyleSelector || !this.settings.api.mapboxControls) && this.styleSelector.isAdded()) {
             this.map.removeControl(this.styleSelector);
+        }
+        if ((!this.settings.api.showFormatFieldHelper || !this.settings.api.mapboxControls) && this.formatFieldHelper.isAdded()) {
+            this.map.removeControl(this.formatFieldHelper);
         }
     }
 

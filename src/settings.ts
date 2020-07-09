@@ -78,6 +78,7 @@ export class APISettings {
     public styleUrl4: string = "";
     public styleUrl5: string = "";
     public showStyleSelector: boolean = false;
+    public showFormatFieldHelper: boolean = false;
     public zoom: number = 0;
     public startLong: number = 0;
     public startLat: number = 0;
