@@ -20,7 +20,7 @@ export class StyleSelector implements mapboxgl.IControl {
         this.added = false;
     }
 
-    public onAdd(map) {
+    public onAdd(map): HTMLElement {
         this.added = true;
         this.map = map;
         this.container = document.createElement('div');

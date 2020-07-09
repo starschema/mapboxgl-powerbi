@@ -396,7 +396,7 @@ export class MapboxMap implements IVisual {
 
         // Update style options
         this.styleSelector.update(this.settings)
-        this.formatFieldHelper.update(this.settings)
+        this.formatFieldHelper.update(this.roleMap)
 
         if (mapboxgl.accessToken != this.settings.api.accessToken) {
             // @ts-ignore
@@ -516,17 +516,17 @@ export class MapboxMap implements IVisual {
 
     private manageControlElements() {
         if (this.settings.api.mapboxControls) {
-            if (this.settings.api.showStyleSelector && !this.styleSelector.isAdded()) {
-                this.map.addControl(this.styleSelector);
-            }
-            if (this.settings.api.showFormatFieldHelper && !this.formatFieldHelper.isAdded()) {
-                this.map.addControl(this.formatFieldHelper);
-            }
             if (!this.controlsPopulated) {
                 this.map.addControl(this.navigationControl);
                 this.map.addControl(this.drawControl);
                 this.map.addControl(this.autoZoomControl);
                 this.controlsPopulated = true;
+            }
+            if (this.settings.api.showStyleSelector && !this.styleSelector.isAdded()) {
+                this.map.addControl(this.styleSelector);
+            }
+            if (this.settings.api.showFormatFieldHelper && !this.formatFieldHelper.isAdded()) {
+                this.map.addControl(this.formatFieldHelper);
             }
         } else {
             if (this.controlsPopulated) {
