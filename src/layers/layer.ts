@@ -157,10 +157,14 @@ export abstract class Layer {
         const map = this.parent.getMap();
         let lastId = prevId
         if (settings[this.id].show) {
-            //let firstSymbolId = calculateLabelPosition(settings, map)
+            let firstSymbolId = calculateLabelPosition(settings, map)
             if (this.prevLabelPositionSetting === settings.api.labelPosition) {
                 if (!this.layerExists()) {
-                    this.addLayer(settings, prevId, roleMap);
+                    if (this.id === 'choropleth') {
+                        this.addLayer(settings, prevId, roleMap);
+                    } else {
+                        this.addLayer(settings, firstSymbolId, roleMap);
+                    }
                 }
             } else {
                 this.moveLayer(prevId)
