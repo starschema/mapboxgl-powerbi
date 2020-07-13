@@ -387,6 +387,14 @@
                 "bool": true
               }
             },
+            "showFormatFieldHelper": {
+              "displayName": "Show format field helper",
+              "displayNameKey": "showFormatFieldHelper",
+              "description": "Toggle format field helper on/off",
+              "type": {
+                "bool": true
+              }
+            },
             "legendPosition": {
               "type": {
                 "enumeration": [

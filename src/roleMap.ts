@@ -28,8 +28,8 @@ export class RoleMap {
     }
 
     colorByColorField(i: number) : string {
-        const col = this.getColumnValueByIndex('color', i);
-        return col ? col.displayName : "";
+        const cols = this.getAll('color');
+        return (cols.length > i) ? cols[i].displayName : "";
     }
 
     location() : string {
@@ -87,14 +87,6 @@ export class RoleMap {
         }
 
         return this.map[role][0];
-    }
-
-    getColumnValueByIndex(role: string, i: number) : Column {
-        if (!this.map[role] || this.map[role].length <= i) {
-            return null;
-        }
-
-        return this.map[role][i];
     }
 }
 
