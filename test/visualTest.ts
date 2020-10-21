@@ -1,5 +1,5 @@
 import { MapboxData } from "./visualData"
-import { MapboxMap as Visual } from "../src/visual" 
+import { MapboxMap as Visual } from "../src/MapboxMap"
 import { MapboxChartBuilder } from "./visualBuilder"
 import { MockILocale, MockIAllowInteractions, MockITooltipService, MockIColorPalette, MockISelectionManager, MockIVisualHost } from "powerbi-visuals-utils-testutils"
 import powerbiVisualsApi from "powerbi-visuals-api";

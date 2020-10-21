@@ -26,7 +26,7 @@
 
 import { VisualBuilderBase } from "powerbi-visuals-utils-testutils"
 import powerbiVisualsApi from "powerbi-visuals-api";
-import { MapboxMap as VisualClass } from "../src/visual"
+import { MapboxMap as VisualClass } from "../src/MapboxMap"
 import VisualConstructorOptions = powerbiVisualsApi.extensibility.visual.VisualConstructorOptions;
 
 export class MapboxChartBuilder extends VisualBuilderBase<VisualClass> {
