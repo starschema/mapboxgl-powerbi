@@ -52,6 +52,7 @@ import { AutoZoomControl } from "./autoZoomControl"
 import { MapboxGeocoderControl } from "./mapboxGeocoderControl"
 import { LayerControl } from "./layerControl"
 
+self = window
 import * as mapboxgl from "mapbox-gl"
 import { MapboxSettings, ChoroplethSettings } from "./settings";
 import { calculateLabelPosition, zoomToData } from "./mapboxUtils";

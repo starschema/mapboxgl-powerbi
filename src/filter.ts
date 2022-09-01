@@ -1,8 +1,8 @@
 import powerbiVisualsApi from "powerbi-visuals-api";
 import IVisualHost = powerbiVisualsApi.extensibility.visual.IVisualHost;
 import { GeoJSONGeometry } from "@mapbox/geojson-types"
+self = window
 import * as mapboxgl from "mapbox-gl"
-
 import { debounce } from "./mapboxUtils"
 import { Circle } from "./layers/circle"
 import { Choropleth } from "./layers/choropleth"

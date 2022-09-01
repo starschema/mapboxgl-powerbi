@@ -10,10 +10,10 @@ Drop in the Mapbox Visual to your Power BI dashboard from the [Microsoft Office 
 ### Example
 
 * [Example Dashboard - 2017 FCC Broadband Speeds in New Jersey](https://app.powerbi.com/view?r=eyJrIjoiMTk4ZDk3OWYtNzc2Ny00NDE0LWE2ZWYtZDk5NjAwZTA3YTljIiwidCI6IjYyOWE3MGIyLTMyYjktNDEyNi05NTFlLTE3NjA0Y2Y0NTZlYyIsImMiOjF9)
-    
+
 ### Documentation
 
-- Check out the official Mapbox Visual for Power BI docs at: 
+- Check out the official Mapbox Visual for Power BI docs at:
     * [Getting Started](https://www.mapbox.com/help/power-bi/)
     * [Creating a Choropleth](https://www.mapbox.com/help/power-bi-choropleth-map/)
 
@@ -45,11 +45,48 @@ On Power BI Online or Desktop, click `add visual from marketplace` and search `M
 
 ![](https://dl.dropbox.com/s/m0rgaypm9d7o0ee/mapbox_marketplace_visual.png)
 
+### LastPass extension issue
+
+#### Symptoms
+When the LastPass extension is enabled the map doesn't appear and an error message is logged on the console:
+```
+VM4163:5639 Error: Failed to execute 'fetch' on 'Window': Illegal invocation
+    at <anonymous>:5639:16203
+```
+The error message may vary from browser to browser bug calling fetch in an illegal object is always part of it
+
+#### Causes
+
+1. The LastPass extension replaces the global `fetch` with a function that is basically like this:
+   ```
+   // ...
+   originalFetchFunction.apply(this, arguments)
+   // ...
+   ```
+
+2. PowerBI replaces the `self` with an own `Window` object. Perhaps for sandboxing purposes. The code is huge and hard to navigate but there is a comment about this:
+    ```
+    //overwrite global variables with window values for PowerBI libraries
+    ```
+    Based on the code it tries to overwrite `window` too but somehow it remains intact. Again this piece of the code is not well understood.
+
+3. The mapbox-gl.js uses `fetch` by calling it like `self.fetch(...)`.
+    Here `self` is PowerBI's generated object and `fetch` it LastPass's code. When the LastPass fetch tries to apply the original fetch function to the generated object it fails.
+
+#### Mitigation
+
+The `window` object is still the original native `Window` object so replacing the generated `self` to this original `Window` solves the problem. In practice it means a line
+```
+self = window
+```
+before importing mapbox-gl
+
+
 ## What is Mapbox?
 
 Mapbox is the location data platform for mobile and web applications. Mapbox provides [building blocks](https://www.mapbox.com/products/) to add location features like maps, search, and navigation into any experience you create. Use our simple and powerful APIs & SDKs and our open source libraries for interactivity and control.
 
-Not a Mapbox user yet? [Sign up for an account here](https://www.mapbox.com/signup/). Once you’re signed in, all you need to start building with Power BI is a Mapbox access token. 
+Not a Mapbox user yet? [Sign up for an account here](https://www.mapbox.com/signup/). Once you’re signed in, all you need to start building with Power BI is a Mapbox access token.
 
 ## Do you have questions?
 

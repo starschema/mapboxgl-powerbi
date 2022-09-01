@@ -1,5 +1,6 @@
 import { GeoJSONGeometry } from "@mapbox/geojson-types"
 import * as mapboxgl from "mapbox-gl"
+self = window
 
 declare var fastDeepEqual: any;
 export module FeatureOps {
