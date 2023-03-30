@@ -19,6 +19,8 @@ export class Circle extends Layer {
     private static readonly HighlightID = 'circle-highlight';
 
     private static readonly LayerOrder = [Circle.ID, Circle.HighlightID];
+    private static readonly requiredNumberOfParamsInCircleColor = 5;
+
 
     constructor(map: MapboxMap, filter: Filter, palette: Palette) {
         super(map, Circle.ID)
@@ -198,7 +200,7 @@ export class Circle extends Layer {
 
         // Add transparent as default so that we only see regions
         // for which we have data values
-        categoricalStyle = categoricalStyle.concat(Array(5 - categoricalStyle.length).fill('rgba(255,0,0,255)'));
+        categoricalStyle = categoricalStyle.concat(Array(this.requiredNumberOfParamsInCircleColor - categoricalStyle.length).fill('rgba(255,0,0,255)'));
 
         return categoricalStyle;
     }
