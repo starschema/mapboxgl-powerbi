@@ -206,22 +206,20 @@ export class Circle extends Layer {
     }
 
     private static getSizes(sizeLimits: Limits, map: any, settings: any, sizeField: string) {
-        if (sizeField !== '' && sizeLimits && sizeLimits.min != null && sizeLimits.max != null && sizeLimits.min != sizeLimits.max) {
+        const classCount = getClassCount(sizeLimits.values);
+        if (sizeField !== '' && sizeLimits && sizeLimits.min != null && sizeLimits.max != null && sizeLimits.min != sizeLimits.max && classCount > 0) {
             const style: any[] = [
                 "interpolate", ["linear"],
                 ["to-number", ['get', sizeField]]
             ]
 
-            const classCount = getClassCount(sizeLimits.values);
             const sizeStops: any[] = getBreaks(sizeLimits.values, ClassificationMethod.Quantile, classCount);
             const sizeDelta = (settings.circle.radius * settings.circle.scaleFactor - settings.circle.radius) / classCount
 
             sizeStops.map((sizeStop, index) => {
                 const size = settings.circle.radius + index * sizeDelta
                 style.push(sizeStop);
-                if(!isNaN(size) && isFinite(size)) {
-                    style.push(size);
-                }
+                style.push(size);
             });
             return style;
         }
