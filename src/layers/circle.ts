@@ -19,6 +19,8 @@ export class Circle extends Layer {
     private static readonly HighlightID = 'circle-highlight';
 
     private static readonly LayerOrder = [Circle.ID, Circle.HighlightID];
+    private static readonly requiredNumberOfParamsInCircleColor = 5;
+
 
     constructor(map: MapboxMap, filter: Filter, palette: Palette) {
         super(map, Circle.ID)
@@ -198,19 +200,19 @@ export class Circle extends Layer {
 
         // Add transparent as default so that we only see regions
         // for which we have data values
-        categoricalStyle.push('rgba(255,0,0,255)');
+        categoricalStyle = categoricalStyle.concat(Array(this.requiredNumberOfParamsInCircleColor - categoricalStyle.length).fill('rgba(255,0,0,255)'));
 
         return categoricalStyle;
     }
 
     private static getSizes(sizeLimits: Limits, map: any, settings: any, sizeField: string) {
-        if (sizeField !== '' && sizeLimits && sizeLimits.min != null && sizeLimits.max != null && sizeLimits.min != sizeLimits.max) {
+        const classCount = getClassCount(sizeLimits.values);
+        if (sizeField !== '' && sizeLimits && sizeLimits.min != null && sizeLimits.max != null && sizeLimits.min != sizeLimits.max && classCount > 0) {
             const style: any[] = [
                 "interpolate", ["linear"],
                 ["to-number", ['get', sizeField]]
             ]
 
-            const classCount = getClassCount(sizeLimits.values);
             const sizeStops: any[] = getBreaks(sizeLimits.values, ClassificationMethod.Quantile, classCount);
             const sizeDelta = (settings.circle.radius * settings.circle.scaleFactor - settings.circle.radius) / classCount
 
