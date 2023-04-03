@@ -109,6 +109,10 @@ export class LegendControl {
         titleElement.appendChild(titleText);
         legend.appendChild(titleElement)
 
+        if (data.some(item => typeof item["colorStop"] === "string")) {
+            data.sort(this.compareStringValues)
+        }
+
         data.forEach(({colorStop, color}) => {
             // Create line item
             const item = d.createElement('div');
@@ -135,4 +139,11 @@ export class LegendControl {
             legend.appendChild(item)
         })
     }
+
+    compareStringValues(a: object, b: object): number {
+        const pattern = /^\d+/;
+        const aNum = parseInt((a["colorStop"].match(pattern) ?? '0') as string);
+        const bNum = parseInt((b["colorStop"].match(pattern) ?? '0') as string);
+        return aNum - bNum;
+      }
 }
