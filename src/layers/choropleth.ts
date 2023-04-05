@@ -437,12 +437,8 @@ export class Choropleth extends Layer {
 
         const result = roleMap.tooltips().map( column => {
             const key = column.displayName;
-            let prefix = "";
-            if (!column.roles.location && !column.roles.latitude && !column.roles.longitude && column.type.numeric) {
-                prefix = settings.choropleth.aggregation;
-            }
             const data = {
-                displayName: `${prefix} ${key}`,
+                displayName: key,
                 value: "null",
             }
             if (dataUnderLocation[key] != null) {
