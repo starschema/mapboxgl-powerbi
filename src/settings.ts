@@ -225,7 +225,6 @@ export class ChoroplethSettings {
 
     public show: boolean = false;
     public colorField: number = 1;
-    public aggregation: string = "Count";
     public diverging: boolean = false;
     public minColor: string = "#edf8b1";
     public midColor: string = "#7fcdbb";
