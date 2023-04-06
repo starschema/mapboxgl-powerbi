@@ -1666,6 +1666,62 @@
                 "integer": true
               }
             },
+            "hoverHighlight": {
+              "displayName": "Hover Highlight",
+              "displayNameKey": "hoverHighlight",
+              "description": "Enable hover highlight",
+              "type": {
+                "bool": true
+              }
+            },
+            "hoverHighlightColor": {
+              "displayName": "Hover Highlight Color",
+              "displayNameKey": "hoverHighlightColor",
+              "description": "Defines the hover color of a polygon.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "hoverHighlightOpacity": {
+              "displayName": "Hover Highlight Opacity",
+              "displayNameKey": "hoverHighlightOpacity",
+              "description": "Defines the hover highlight opacity of a polygon.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "hoverHighlightOutlineColor": {
+              "displayName": "Hover Highlight Outline Color",
+              "displayNameKey": "hoverHighlightOutlineColor",
+              "description": "Defines the hover color of the highlight outline of a polygon.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "hoverHighlightOutlineOpacity": {
+              "displayName": "Hover Highlight Outline Opacity",
+              "displayNameKey": "hoverHighlightOutlineOpacity",
+              "description": "Defines the hover highlight outline opacity of a polygon.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "hoverHighlightOutlineWidth": {
+              "displayName": "Hover Highlight Outline Width",
+              "displayNameKey": "hoverHighlightOutlineWidth",
+              "description": "Defines the hover highlight outline width of a polygon.",
+              "type": {
+                "numeric": true
+              }
+            },
             "legend": {
               "displayName": "Legend",
               "displayNameKey": "legend",
