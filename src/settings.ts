@@ -457,6 +457,14 @@ export class ChoroplethSettings {
             delete properties.legendPosition
         }
 
+        if (!properties.hoverHighlight) {
+            delete properties.hoverHighlightColor
+            delete properties.hoverHighlightOpacity
+            delete properties.hoverHighlightOutlineColor
+            delete properties.hoverHighlightOutlineOpacity
+            delete properties.hoverHighlightOutlineWidth
+        }
+
         return { instances };
     }
 
