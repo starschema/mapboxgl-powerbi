@@ -506,6 +506,10 @@ export class RasterSettings {
 }
 
 export class LegendSettings {
+    public legendWidth: number = 124;
+    public legendHeight: number = 180;
+    public orientation: string = "column";
+    public alignment: string = "left";
     public opacity: number = 80;
     public fontSize: number = 12;
     public font: string = "Helvetica Neue";
@@ -513,6 +517,11 @@ export class LegendSettings {
     public fontWeight: string = "normal";
     public fontColor: string = "#000000";
     public backgroundColor: string = "#FFFFFF";
+    public borderWidth: number = 2;
+    public borderOpacity: number = 80;
+    public borderColor: string = "#b7bebf";
+    public borderRadius: number = 7;
+    public order: string = "asc";
 
     public enumerateObjectInstances(objectEnumeration) {
         let instances = objectEnumeration.instances;
@@ -525,6 +534,14 @@ export class LegendSettings {
             properties.customFont = "";
         }
 
+        // if (properties.orientation === "row") {
+        //     properties.legendHeight = 50
+        //     properties.legendWidth = 550
+        // } else {
+        //     properties.legendHeight = 180
+        //     properties.legendWidth = 124
+        // }
+
         instances[0].validValues = {
             opacity: {
                 numberRange: {
@@ -535,7 +552,19 @@ export class LegendSettings {
             fontSize: {
                 numberRange: {
                     min: 10,
-                    max: 16,
+                    max: 40,
+                }
+            },
+            borderRadius: {
+                numberRange: {
+                    min: 0,
+                    max: 50,
+                }
+            },
+            borderOpacity: {
+                numberRange: {
+                    min: 0,
+                    max: 100,
                 }
             },
         }

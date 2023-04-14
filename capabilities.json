@@ -1794,12 +1794,57 @@
         "legends": {
           "displayName": "Legend Customization",
           "properties": {
+            "legendWidth": {
+              "displayName": "Width (px)",
+              "displayNameKey": "legendWidth",
+              "description": "Set the width of the legend box",
+              "type": {
+                "numeric": true
+              }
+            },
+            "legendHeight": {
+              "displayName": "Height (px)",
+              "displayNameKey": "legendHeight",
+              "description": "Set the height of the legend box",
+              "type": {
+                "numeric": true
+              }
+            },
             "opacity": {
               "displayName": "Opacity",
               "displayNameKey": "opacity",
               "description": "Set opacity for the legend elements",
               "type": {
                 "numeric": true
+              }
+            },
+            "orientation": {
+              "displayName": "Orientation",
+              "displayNameKey": "orientation",
+              "description": "Set orientation for the legend elements",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "column",
+                    "displayName": "Vertical",
+                    "displayNameKey": "vertical"
+                  },
+                  {
+                    "value": "row",
+                    "displayName": "Horizontal",
+                    "displayNameKey": "horizontal"
+                  }
+                ]
+              }
+            },
+            "alignment": {
+              "displayName": "Alignment",
+              "displayNameKey": "alignment",
+              "description": "Set alignment for the legend elements",
+              "type": {
+                "formatting": {
+                  "alignment": true
+                }
               }
             },
             "fontSize": {
@@ -1913,6 +1958,61 @@
                     "color": true
                   }
                 }
+              }
+            },
+            "borderWidth": {
+              "displayName": "Border Width",
+              "displayNameKey": "borderWidth",
+              "description": "Set the border width of the legend box",
+              "type": {
+                "numeric": true
+              }
+            },
+            "borderRadius": {
+              "displayName": "Border Radius (px)",
+              "displayNameKey": "borderRadius",
+              "description": "Set the border radius of the legend box",
+              "type": {
+                "numeric": true
+              }
+            },
+            "borderOpacity": {
+              "displayName": "Border Opacity",
+              "displayNameKey": "borderOpacity",
+              "description": "Set opacity for the legend border",
+              "type": {
+                "numeric": true
+              }
+            },
+            "borderColor": {
+              "displayName": "Border Color",
+              "displayNameKey": "borderColor",
+              "description": "Set the color for the border",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "order": {
+              "displayName": "Order",
+              "displayNameKey": "order",
+              "description": "Set the order of the legend elements",
+              "type": {
+                "enumeration": [
+                  {
+                    "value": "desc",
+                    "displayName": "Descending",
+                    "displayNameKey": "desc"
+                  },
+                  {
+                    "value": "asc",
+                    "displayName": "Ascending",
+                    "displayNameKey": "asc"
+                  }
+                ]
               }
             }
           }
