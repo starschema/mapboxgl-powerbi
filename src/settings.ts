@@ -534,14 +534,6 @@ export class LegendSettings {
             properties.customFont = "";
         }
 
-        // if (properties.orientation === "row") {
-        //     properties.legendHeight = 50
-        //     properties.legendWidth = 550
-        // } else {
-        //     properties.legendHeight = 180
-        //     properties.legendWidth = 124
-        // }
-
         instances[0].validValues = {
             opacity: {
                 numberRange: {

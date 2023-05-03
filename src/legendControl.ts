@@ -1,3 +1,6 @@
+import powerbiVisualsApi from "powerbi-visuals-api";
+import IVisualHost = powerbiVisualsApi.extensibility.visual.IVisualHost;
+import VisualObjectInstancesToPersist = powerbiVisualsApi.VisualObjectInstancesToPersist;
 import * as formatting from "powerbi-visuals-utils-formattingutils"
 import { dragElement } from "./mapboxUtils"
 import { LegendContainer } from "./legendContainer"
@@ -8,7 +11,6 @@ export type ColorStops = { colorStop: number | string, color: string }[];
 
 export class LegendControl {
     private map: mapboxgl.Map;
-    //private settings: LegendSettings;
     private legendContainer: { [legendPosition: string]: LegendContainer } = {};
     private legends: { [legendPosition: string]: { [key: string]: HTMLElement } } = {};
     private opacity: number;
@@ -17,11 +19,13 @@ export class LegendControl {
     private orientation: string = "column";
     private legendHeight: number;
     private legendWidth: number;
+    private host: IVisualHost;
 
     public static readonly DEFAULT_NUMBER_FORMAT = "0.##"
 
-    constructor(map) {
+    constructor(map, host) {
         this.map = map;
+        this.host = host
     }
 
     addControl(settings: LegendSettings) {
@@ -29,7 +33,6 @@ export class LegendControl {
             this.legendContainer[legendPosition] = new LegendContainer(legendPosition)
             this.map.addControl(this.legendContainer[legendPosition], legendPosition)
         })
-        //this.settings = settings
     }
 
     removeControl() {
@@ -87,7 +90,7 @@ export class LegendControl {
 
     createLegendElement(title: string, data: ColorStops, format: string, settings: LegendSettings): HTMLElement {
         if (this.hasOrientationChanged(settings)) {
-            this.setCorrectSizes(settings)
+            this.persistSizeProperties(settings)
         }
 
         const d = document;
@@ -140,6 +143,14 @@ export class LegendControl {
             data.sort((a, b) => this.compareStringValues(a, b, settings.order))
         }
 
+        let minWidth = "unset"
+
+        if (settings.alignment === 'center') {
+            const colorStops = data.map(el => Number(el.colorStop).toFixed(2).toString().length);
+            const longestValue = Math.max(...colorStops) + 1
+            minWidth = (settings.fontSize/2) * longestValue + 'px'
+        }
+
         data.sort((a, b) => settings.order === "asc" ? this.getColorStopValue(a) - this.getColorStopValue(b) :  this.getColorStopValue(b) - this.getColorStopValue(a))
 
         data.forEach(({colorStop, color}) => {
@@ -167,7 +178,7 @@ export class LegendControl {
             // Create value element and add to item
             const valueElement = document.createElement('span');
             valueElement.setAttribute("style", `
-                min-width: ${settings.alignment === 'center' ? (settings.fontSize/2) * 7 + 'px' : 'unset'};
+                min-width: ${minWidth};
             `);
             valueElement.setAttribute("class", "mapbox-legend-value middle");
             if (typeof colorStop === "number") {
@@ -209,13 +220,16 @@ export class LegendControl {
         return this.orientation !== settings.orientation
     }
 
-    setCorrectSizes(settings: LegendSettings) {
-        if (settings.orientation === "row") {
-            settings.legendHeight = 50
-            settings.legendWidth = 550
-        } else {
-            settings.legendHeight = 180
-            settings.legendWidth = 124
-        }
+    persistSizeProperties(settings: LegendSettings) {
+        this.host.persistProperties(<VisualObjectInstancesToPersist>{
+            merge: [{
+                objectName: "legends",
+                selector: null,
+                properties: {
+                    legendWidth: settings.orientation === "row" ? 550 : 124,
+                    legendHeight: settings.orientation === "row" ? 50 : 180,
+                }
+            }]
+        })
     }
 }
