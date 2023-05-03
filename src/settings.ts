@@ -225,7 +225,6 @@ export class ChoroplethSettings {
 
     public show: boolean = false;
     public colorField: number = 1;
-    public aggregation: string = "Count";
     public diverging: boolean = false;
     public minColor: string = "#edf8b1";
     public midColor: string = "#7fcdbb";
@@ -303,6 +302,13 @@ export class ChoroplethSettings {
     public outlineColor: string = "#bdbdbd";
     public outlineWidth: number = 1;
     public outlineOpacity: number = 50;
+
+    public hoverHighlight: boolean = true;
+    public hoverHighlightColor: string = "#2c7fb8";
+    public hoverHighlightOpacity: number = 100;
+    public hoverHighlightOutlineColor: string = "#000000";
+    public hoverHighlightOutlineOpacity: number = 100;
+    public hoverHighlightOutlineWidth: number = 1;
 
     public legend: boolean = true;
     public legendPosition: string = "bottom-right";
@@ -449,6 +455,14 @@ export class ChoroplethSettings {
 
         if (!properties.legend) {
             delete properties.legendPosition
+        }
+
+        if (!properties.hoverHighlight) {
+            delete properties.hoverHighlightColor
+            delete properties.hoverHighlightOpacity
+            delete properties.hoverHighlightOutlineColor
+            delete properties.hoverHighlightOutlineOpacity
+            delete properties.hoverHighlightOutlineWidth
         }
 
         return { instances };

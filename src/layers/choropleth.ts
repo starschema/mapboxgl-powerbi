@@ -17,6 +17,8 @@ export class Choropleth extends Layer {
     public static readonly OutlineID = 'choropleth-outline'
     public static readonly HighlightID = 'choropleth-highlight'
     public static readonly HighlightOutlineID = 'choropleth-highlight-outline'
+    public static readonly HoverHighlightID = 'choropleth-hover-highlight'
+    public static readonly HoverHighlightOutlineID = 'choropleth-hover-highlight-outline'
     public static readonly ExtrusionID = 'choropleth-extrusion'
     public static readonly ExtrusionHighlightID = 'choropleth-extrusion-highlight'
     private static readonly LayerOrder = [
@@ -24,6 +26,8 @@ export class Choropleth extends Layer {
         Choropleth.OutlineID,
         Choropleth.HighlightID,
         Choropleth.HighlightOutlineID,
+        Choropleth.HoverHighlightID,
+        Choropleth.HoverHighlightOutlineID,
         Choropleth.ExtrusionID,
         Choropleth.ExtrusionHighlightID,
     ]
@@ -113,6 +117,31 @@ export class Choropleth extends Layer {
             "source-layer": sourceLayer,
             filter: zeroFilter,
         });
+        layers[Choropleth.HoverHighlightID] = decorateLayer({
+            id: Choropleth.HoverHighlightID,
+            type: 'fill',
+            source: 'choropleth-source',
+            paint: {
+                "fill-color": choroSettings.hoverHighlightColor,
+                "fill-opacity": choroSettings.hoverHighlightOpacity / 100
+            },
+            "source-layer": sourceLayer,
+            filter: zeroFilter
+        });
+        layers[Choropleth.HoverHighlightOutlineID] = decorateLayer({
+            id: Choropleth.HoverHighlightOutlineID,
+            type: 'line',
+            layout: {
+                "line-join": "round"
+            },
+            paint: {
+                "line-width": choroSettings.hoverHighlightOutlineWidth,
+                "line-color": choroSettings.hoverHighlightOutlineColor,
+            },
+            source: 'choropleth-source',
+            "source-layer": sourceLayer,
+            filter: zeroFilter,
+        });
         layers[Choropleth.ExtrusionHighlightID] = decorateLayer({
             id: Choropleth.ExtrusionHighlightID,
             type: "fill-extrusion",
@@ -141,6 +170,7 @@ export class Choropleth extends Layer {
         const choroSettings = this.settings;
         const vectorProperty = choroSettings.getCurrentVectorProperty()
         const featureVectorProperty = e.features[0].properties[vectorProperty]
+
         if (!featureVectorProperty) {
             return;
         }
@@ -148,9 +178,9 @@ export class Choropleth extends Layer {
         if (this.isExtruding()) {
             map.setFilter(Choropleth.ExtrusionHighlightID, ["==", vectorProperty, featureVectorProperty]);
         }
-        else {
-            map.setFilter(Choropleth.HighlightID, ["==", vectorProperty, featureVectorProperty]);
-            map.setFilter(Choropleth.HighlightOutlineID, ["==", vectorProperty, featureVectorProperty]);
+        else if (choroSettings.hoverHighlight) {
+            map.setFilter(Choropleth.HoverHighlightID, ["==", vectorProperty, featureVectorProperty]);
+            map.setFilter(Choropleth.HoverHighlightOutlineID, ["==", vectorProperty, featureVectorProperty]);
         }
     }
 
@@ -168,6 +198,8 @@ export class Choropleth extends Layer {
         map.setPaintProperty(Choropleth.ExtrusionID, 'fill-extrusion-opacity', choroSettings.opacity / 100);
         map.setFilter(Choropleth.HighlightID, zeroFilter);
         map.setFilter(Choropleth.HighlightOutlineID, zeroFilter);
+        map.setFilter(Choropleth.HoverHighlightID, zeroFilter);
+        map.setFilter(Choropleth.HoverHighlightOutlineID, zeroFilter);
         map.setFilter(Choropleth.ExtrusionHighlightID, zeroFilter);
     }
 
@@ -272,7 +304,6 @@ export class Choropleth extends Layer {
             map.setFilter(Choropleth.ExtrusionID, zeroFilter)
             // map.setPitch(0)
      }
-
     }
 
     setFillProps(map: any, settings: ChoroplethSettings) {
@@ -280,6 +311,8 @@ export class Choropleth extends Layer {
         map.setPaintProperty(Choropleth.ID, 'fill-opacity', settings.opacity / 100);
         map.setPaintProperty(Choropleth.HighlightID, "fill-color", settings.highlightColor)
         map.setPaintProperty(Choropleth.HighlightID, "fill-opacity", settings.highlightOpacity / 100)
+        map.setPaintProperty(Choropleth.HoverHighlightID, "fill-color", settings.hoverHighlightColor)
+        map.setPaintProperty(Choropleth.HoverHighlightID, "fill-opacity", settings.hoverHighlightOpacity / 100)
         map.setPaintProperty(Choropleth.ExtrusionHighlightID, "fill-extrusion-color", settings.highlightColor)
         map.setPaintProperty(Choropleth.ExtrusionHighlightID, 'fill-extrusion-base', settings.baseHeight);
         map.setPaintProperty(Choropleth.ExtrusionID, 'fill-extrusion-base', settings.baseHeight);
@@ -292,6 +325,9 @@ export class Choropleth extends Layer {
         map.setPaintProperty(Choropleth.HighlightOutlineID, 'line-color', settings.highlightOutlineColor);
         map.setPaintProperty(Choropleth.HighlightOutlineID, 'line-opacity', settings.highlightOutlineOpacity / 100);
         map.setPaintProperty(Choropleth.HighlightOutlineID, 'line-width', settings.highlightOutlineWidth);
+        map.setPaintProperty(Choropleth.HoverHighlightOutlineID, 'line-color', settings.hoverHighlightOutlineColor);
+        map.setPaintProperty(Choropleth.HoverHighlightOutlineID, 'line-opacity', settings.hoverHighlightOutlineOpacity / 100);
+        map.setPaintProperty(Choropleth.HoverHighlightOutlineID, 'line-width', settings.hoverHighlightOutlineWidth);
     }
 
     setZoom(map: any, settings: ChoroplethSettings) {
@@ -437,12 +473,8 @@ export class Choropleth extends Layer {
 
         const result = roleMap.tooltips().map( column => {
             const key = column.displayName;
-            let prefix = "";
-            if (!column.roles.location && !column.roles.latitude && !column.roles.longitude && column.type.numeric) {
-                prefix = settings.choropleth.aggregation;
-            }
             const data = {
-                displayName: `${prefix} ${key}`,
+                displayName: key,
                 value: "null",
             }
             if (dataUnderLocation[key] != null) {

@@ -886,39 +886,6 @@
                   "numeric": true
                 }
             },
-            "aggregation": {
-              "type": {
-                "enumeration": [
-                  {
-                    "value": "Count",
-                    "displayName": "Count",
-                    "displayNameKey": "Count"
-                  },
-                  {
-                    "value": "Sum",
-                    "displayName": "Sum",
-                    "displayNameKey": "Sum"
-                  },
-                  {
-                    "value": "Average",
-                    "displayName": "Average",
-                    "displayNameKey": "Average"
-                  },
-                  {
-                    "value": "Minimum",
-                    "displayName": "Minimum",
-                    "displayNameKey": "Minimum"
-                  },
-                  {
-                    "value": "Maximum",
-                    "displayName": "Maximum",
-                    "displayNameKey": "Maximum"
-                  }
-                ]
-              },
-              "displayName": "Aggregation function",
-              "displayNameKey": "aggregation"
-            },
             "diverging": {
               "displayName": "Diverging",
               "description": "Diverge colors by value",
@@ -1697,6 +1664,62 @@
               "description": "The global opacity in percentage at which the outline will be drawn.",
               "type": {
                 "integer": true
+              }
+            },
+            "hoverHighlight": {
+              "displayName": "Hover Highlight",
+              "displayNameKey": "hoverHighlight",
+              "description": "Enable hover highlight",
+              "type": {
+                "bool": true
+              }
+            },
+            "hoverHighlightColor": {
+              "displayName": "Hover Highlight Color",
+              "displayNameKey": "hoverHighlightColor",
+              "description": "Defines the hover color of a polygon.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "hoverHighlightOpacity": {
+              "displayName": "Hover Highlight Opacity",
+              "displayNameKey": "hoverHighlightOpacity",
+              "description": "Defines the hover highlight opacity of a polygon.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "hoverHighlightOutlineColor": {
+              "displayName": "Hover Highlight Outline Color",
+              "displayNameKey": "hoverHighlightOutlineColor",
+              "description": "Defines the hover color of the highlight outline of a polygon.",
+              "type": {
+                "fill": {
+                  "solid": {
+                    "color": true
+                  }
+                }
+              }
+            },
+            "hoverHighlightOutlineOpacity": {
+              "displayName": "Hover Highlight Outline Opacity",
+              "displayNameKey": "hoverHighlightOutlineOpacity",
+              "description": "Defines the hover highlight outline opacity of a polygon.",
+              "type": {
+                "numeric": true
+              }
+            },
+            "hoverHighlightOutlineWidth": {
+              "displayName": "Hover Highlight Outline Width",
+              "displayNameKey": "hoverHighlightOutlineWidth",
+              "description": "Defines the hover highlight outline width of a polygon.",
+              "type": {
+                "numeric": true
               }
             },
             "legend": {

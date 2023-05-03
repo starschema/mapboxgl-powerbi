@@ -57,33 +57,11 @@ export class Choropleth extends Datasource {
         return this.choroplethData;
     }
 
-    aggregateData(aggregation: string, values: number[]): number | null {
-        if (!values.length) {
-            return null;
-        }
-
-        switch (aggregation) {
-            case "Count":
-                return values.length;
-            case "Sum":
-                return values.reduce((a, b) => a + b);
-            case "Average":
-                return values.reduce((a, b) => a + b) / values.length;
-            case "Minimum":
-                return Math.min(...values);
-            case "Maximum":
-                return Math.max(...values);
-            default:
-                return values[0];
-        }
-    }
-
     update(map, features, roleMap: RoleMap, settings: MapboxSettings) {
         super.update(map, features, roleMap, settings)
         let featureNames = {}
 
         const f = features.map(f => f.properties);
-        const aggregation = settings.choropleth.aggregation;
         let dataByLocation = {}
         const locationCol = roleMap.location();
         roleMap.columns.map( (column: any) => {
@@ -115,7 +93,7 @@ export class Choropleth extends Datasource {
 
                 // Aggreagate the values
                 const values = rawValues[location].filter(value => value != null);
-                dataByLocation[location][column.displayName] = this.aggregateData(aggregation, values);
+                dataByLocation[location][column.displayName] = values?.length ? values[0] : null;
             })
         });
 
