@@ -5,6 +5,7 @@ import * as formatting from "powerbi-visuals-utils-formattingutils"
 import { dragElement } from "./mapboxUtils"
 import { LegendContainer } from "./legendContainer"
 import { LegendSettings, MapboxSettings } from "./settings";
+import { constants } from "./constants"
 const valueFormatter = formatting.valueFormatter;
 
 export type ColorStops = { colorStop: number | string, color: string }[];
@@ -226,8 +227,8 @@ export class LegendControl {
                 objectName: "legends",
                 selector: null,
                 properties: {
-                    legendWidth: settings.orientation === "row" ? 550 : 124,
-                    legendHeight: settings.orientation === "row" ? 50 : 180,
+                    legendWidth: settings.orientation === "row" ? constants.DEFAULT_HOR_WIDTH : constants.DEFAULT_VER_WIDTH,
+                    legendHeight: settings.orientation === "row" ? constants.DEFAULT_HOR_HEIGHT : constants.DEFAULT_VER_HEIGHT,
                 }
             }]
         })
