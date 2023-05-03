@@ -30,6 +30,7 @@ import { dataViewObjectsParser } from "powerbi-visuals-utils-dataviewutils";
 import DataViewObjectsParser = dataViewObjectsParser.DataViewObjectsParser;
 import powerbiVisualsApi from "powerbi-visuals-api";
 import { RoleMap } from "./roleMap"
+import { constants } from "./constants"
 
 export class MapboxSettings extends DataViewObjectsParser {
         public static roleMap: RoleMap;
@@ -520,8 +521,8 @@ export class RasterSettings {
 }
 
 export class LegendSettings {
-    public legendWidth: number = 124;
-    public legendHeight: number = 180;
+    public legendWidth: number = constants.DEFAULT_VER_LEGEND_WIDTH;
+    public legendHeight: number = constants.DEFAULT_VER_LEGEND_HEIGHT;
     public orientation: string = "column";
     public alignment: string = "left";
     public opacity: number = 80;

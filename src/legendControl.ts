@@ -227,8 +227,8 @@ export class LegendControl {
                 objectName: "legends",
                 selector: null,
                 properties: {
-                    legendWidth: settings.orientation === "row" ? constants.DEFAULT_HOR_WIDTH : constants.DEFAULT_VER_WIDTH,
-                    legendHeight: settings.orientation === "row" ? constants.DEFAULT_HOR_HEIGHT : constants.DEFAULT_VER_HEIGHT,
+                    legendWidth: settings.orientation === "row" ? constants.DEFAULT_HOR_LEGEND_WIDTH : constants.DEFAULT_VER_LEGEND_WIDTH,
+                    legendHeight: settings.orientation === "row" ? constants.DEFAULT_HOR_LEGEND_HEIGHT : constants.DEFAULT_VER_LEGEND_HEIGHT,
                 }
             }]
         })
