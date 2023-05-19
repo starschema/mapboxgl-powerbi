@@ -38,6 +38,7 @@ import DataView = powerbiVisualsApi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbiVisualsApi.VisualObjectInstanceEnumerationObject;
 import ISelectionManager = powerbiVisualsApi.extensibility.ISelectionManager;
 import ISelectionId =  powerbiVisualsApi.visuals.ISelectionId
+import IVisualEventService = powerbiVisualsApi.extensibility.IVisualEventService;
 
 import { featureCollection } from "@turf/helpers"
 import bbox from "@turf/bbox"
@@ -95,6 +96,7 @@ export class MapboxMap implements IVisual {
     private tooltipServiceWrapper: ITooltipServiceWrapper;
     private selection: Selection<any>;
     private selectionManager: ISelectionManager;
+    private events: IVisualEventService;
 
     constructor(options: VisualConstructorOptions) {
         this.target = options.element;
@@ -122,7 +124,7 @@ export class MapboxMap implements IVisual {
         this.tooltipServiceWrapper = createTooltipServiceWrapper(options.host.tooltipService, options.element);
 
         this.selectionManager = options.host.createSelectionManager();
-
+        this.events = options.host.eventService;
     }
 
     updateZoom(settings: MapboxSettings) {
@@ -380,18 +382,21 @@ export class MapboxMap implements IVisual {
 
     public update(options: VisualUpdateOptions) {
         // TODO fetch all data instead of first page
+        this.events.renderingStarted(options);
         this.settings = MapboxMap.parseSettings(options && options.dataViews && options.dataViews[0]);
 
         const dataView: DataView = options.dataViews[0];
 
         if (!dataView) {
             console.error('No dataView received from powerBI api')
+            this.events.renderingFailed(options);
             return
         }
 
         if (!this.validateOptions(options)) {
             this.errorDiv.style.display = 'block';
             this.removeMap();
+            this.events.renderingFailed(options);
             return false;
         }
 
@@ -441,6 +446,7 @@ export class MapboxMap implements IVisual {
                     this.errorDiv.innerHTML = (e && e.error && e.error.message) ? e.error.message : Templates.MissingToken;
                     this.errorDiv.style.display = 'block';
                     this.removeMap();
+                    this.events.renderingFailed(options);
                 })
                 this.map.setStyle(this.mapStyle);
             }
@@ -449,8 +455,10 @@ export class MapboxMap implements IVisual {
                 this.manageDrawControlElements()
             }
             this.updateLayers(dataView)
+            this.events.renderingFinished(options);
             return;
         }
+        this.events.renderingFinished(options);
     }
 
     private manageDrawControlElements() {
