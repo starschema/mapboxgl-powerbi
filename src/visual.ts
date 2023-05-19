@@ -490,7 +490,7 @@ export class MapboxMap implements IVisual {
         let removeLegend = true;
 
         if (!this.legend) {
-            this.legend = new LegendControl(this.map)
+            this.legend = new LegendControl(this.map, this.host)
             this.legend.addControl(settings.legends)
         } else {
             this.legend.removeLegends()

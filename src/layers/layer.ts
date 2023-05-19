@@ -298,6 +298,6 @@ export abstract class Layer {
         const colorStops = this.getColorStops();
         const format = roleMap.getColumn('color', this.getId(), settings[this.id].colorField - 1)?.format;
         const legendPosition = settings[this.id].legendPosition
-        legend.addLegend(id, title, colorStops, format, legendPosition);
+        legend.addLegend(id, title, colorStops, format, legendPosition, settings);
     }
 }

@@ -142,7 +142,7 @@ export class Cluster extends Layer {
         const colorStops = this.getColorStops();
         const format = LegendControl.DEFAULT_NUMBER_FORMAT;
         const legendPosition = settings[this.id].legendPosition
-        legend.addLegend(id, title, colorStops, format, legendPosition);
+        legend.addLegend(id, title, colorStops, format, legendPosition, settings);
     }
 
     hasTooltip(tooltips) {
