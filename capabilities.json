@@ -184,6 +184,16 @@
       "location"
     ]
   },
+  "tooltips": {
+    "supportedTypes": {
+        "default": true,
+        "canvas": true
+    },
+    "roles": [
+        "Tooltips"
+    ],
+    "supportEnhancedTooltips": true
+  },
     "objects": {
         "api": {
           "displayName": "Viz Settings",
