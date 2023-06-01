@@ -6,6 +6,8 @@ on:
 jobs:
   Build-and-Deploy:
     runs-on: ubuntu-latest
+    env:
+      minor_version: 1
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
@@ -18,7 +20,7 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           find: "{GITHUB_RUN_ID}"
-          replace: "${{ github.run_id }}"
+          replace: "${{ minor_version }}"
           include: "pbiviz.json" # Will match all README.md files in any nested directory
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
@@ -40,7 +42,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.run_id}}.${{ github.run_number }}
+          tag_name: ${{ minor_version }}.${{ github.run_number }}
           files: |
             dist/PBI*.pbiviz
       - run: echo "🍏 This job's status is ${{ job.status }}."
