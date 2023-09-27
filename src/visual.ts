@@ -427,7 +427,12 @@ export class MapboxMap implements IVisual {
             // @ts-ignore
             mapboxgl.accessToken = this.settings.api.accessToken;
         }
-
+        
+        mapboxgl.setRTLTextPlugin(
+            'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+            null,
+            true // Lazy load the plugin
+        );
 
         let style = this.settings.api.style == 'custom' ? this.settings.api.styleUrl : this.settings.api.style;
         if (this.mapStyle == '' || this.mapStyle != style) {
