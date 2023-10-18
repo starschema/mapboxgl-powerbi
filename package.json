@@ -22,7 +22,7 @@
     "@types/mapbox-gl": "^2.7.5",
     "core-js": "^3.2.1",
     "d3": "5.12.0",
-    "mapbox-gl": "^2.10.0",
+    "mapbox-gl": "git+https://github.com/budavariam/mapbox-gl-js.git#budavariam/prevent-dom-xss-v2.10.0-dist",
     "powerbi-visuals-api": "^4.0.0",
     "powerbi-visuals-tools": "^4.0.5",
     "powerbi-visuals-utils-testutils": "^2.2.1"
@@ -93,5 +93,13 @@
     "webpack-bundle-analyzer": "^3.7.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
+  },
+  "overrides": {
+    "less-loader": {
+      "webpack": "4.47.0"
+    },
+    "mapbox-gl-draw": {
+      "mapbox-gl": "git+https://github.com/budavariam/mapbox-gl-js.git#budavariam/prevent-dom-xss-v2.10.0-dist"
+    }
   }
 }
