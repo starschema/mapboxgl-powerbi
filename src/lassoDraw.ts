@@ -1,7 +1,7 @@
 import { Filter } from "./filter"
 
-import MapboxDrawConstants from '@mapbox/mapbox-gl-draw/src/constants.js';
-import MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js';
+import MapboxDrawConstants from 'mapbox-gl-draw/src/constants.js';
+import MapboxDraw from 'mapbox-gl-draw/dist/mapbox-gl-draw.js';
 import simplify from "@turf/simplify"
 import { constants } from "./constants";
 

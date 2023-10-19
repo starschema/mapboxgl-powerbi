@@ -2,9 +2,9 @@ import { Filter } from "./filter"
 import { constants } from "./constants"
 import { MapboxMap } from "./visual"
 //import { MapboxDraw, MapboxDrawConstants, LassoDraw } from "@mapbox/mapbox-gl-draw"
-import MapboxDrawConstants from '@mapbox/mapbox-gl-draw/src/constants.js';
+import MapboxDrawConstants from 'mapbox-gl-draw/src/constants.js';
 import { LassoDraw } from "./lassoDraw"
-import MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js';
+import MapboxDraw from 'mapbox-gl-draw/dist/mapbox-gl-draw.js';
 
 import { polygon } from "@turf/helpers"
 import bbox from "@turf/bbox"
