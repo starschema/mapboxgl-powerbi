@@ -200,7 +200,7 @@ export class Circle extends Layer {
 
         // Add transparent as default so that we only see regions
         // for which we have data values
-        categoricalStyle = categoricalStyle.concat(Array(this.requiredNumberOfParamsInCircleColor - categoricalStyle.length).fill('rgba(255,0,0,255)'));
+        categoricalStyle = categoricalStyle.concat(Array(Math.max(1, this.requiredNumberOfParamsInCircleColor - categoricalStyle.length)).fill('rgba(255,0,0,255)'));
 
         return categoricalStyle;
     }
