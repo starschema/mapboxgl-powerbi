@@ -37,10 +37,10 @@ import VisualObjectInstance = powerbiVisualsApi.VisualObjectInstance;
 import DataView = powerbiVisualsApi.DataView;
 import VisualObjectInstanceEnumerationObject = powerbiVisualsApi.VisualObjectInstanceEnumerationObject;
 import ISelectionManager = powerbiVisualsApi.extensibility.ISelectionManager;
-import ISelectionId =  powerbiVisualsApi.visuals.ISelectionId
+import ISelectionId = powerbiVisualsApi.visuals.ISelectionId
 import IVisualEventService = powerbiVisualsApi.extensibility.IVisualEventService;
 
-import { featureCollection } from "@turf/helpers"
+import { featureCollection, polygon } from "@turf/helpers"
 import bbox from "@turf/bbox"
 import bboxPolygon from "@turf/bbox-polygon"
 
@@ -68,6 +68,7 @@ import { Raster } from "./layers/raster"
 import { Choropleth } from "./layers/choropleth"
 
 import { select as d3Select } from "d3-selection";
+import { BBox, BBox2d, BBox3d } from "@turf/helpers/lib/geojson";
 type Selection<T1, T2 = T1> = d3.Selection<any, T1, any, T2>;
 
 // tslint:disable-next-line: export-name
@@ -103,9 +104,9 @@ export class MapboxMap implements IVisual {
         this.previousZoom = 0;
         if (document) {
             this.selection = d3Select(options.element)
-            .append('div')
-            .classed('map', true)
-            .attr('id', 'map');
+                .append('div')
+                .classed('map', true)
+                .attr('id', 'map');
 
             this.mapDiv = document.getElementById('map');
 
@@ -138,9 +139,20 @@ export class MapboxMap implements IVisual {
                 if (!acc) {
                     return bounds
                 }
+                const getPolygon = (bboxInput: any[]) => {
+                    if (bboxInput?.length === 4) {
+                        return bboxPolygon(bboxInput as BBox2d)
+                    } else if (bboxInput?.length === 6) {
+                        return bboxPolygon(bboxInput as BBox3d)
+                    } else {
+                        // http://turfjs.org/docs/#bbox
+                        return bboxPolygon(bbox(bboxInput))
+                    }
+                }
+
                 const combined = featureCollection([
-                    bboxPolygon(bbox(acc)),
-                    bboxPolygon(bbox(bounds))
+                    getPolygon(acc),
+                    getPolygon(bounds),
                 ]);
                 return bbox(combined)
             });
@@ -152,11 +164,11 @@ export class MapboxMap implements IVisual {
         try {
             let prevId = calculateLabelPosition(settings, map)
             this.layers.map(layer => {
-                layer.applySettings(settings, this.roleMap, prevId);
+                    layer.applySettings(settings, this.roleMap, prevId);
             });
-            this.updateLegend(settings)
-            this.layerControl.update(this.roleMap)
-            this.updateZoom(settings)
+                this.updateLegend(settings)
+                this.layerControl.update(this.roleMap)
+                this.updateZoom(settings)
         }
         catch (error) {
             console.error("OnUpdate failed:", error)
@@ -427,7 +439,7 @@ export class MapboxMap implements IVisual {
             // @ts-ignore
             mapboxgl.accessToken = this.settings.api.accessToken;
         }
-        
+
         mapboxgl.setRTLTextPlugin(
             'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
             null,
