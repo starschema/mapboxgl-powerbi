@@ -235,6 +235,12 @@ export class MapboxMap implements IVisual {
         this.drawControl.updateDrawTools(this.settings.api.lasso, this.settings.api.polygon);
         this.drawControl.manageHandlers(this);
         this.handleContextMenu();
+
+        mapboxgl.setRTLTextPlugin(
+            'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+            null,
+            true // Lazy load the plugin
+        );
     }
 
     private removeMap() {
@@ -439,12 +445,6 @@ export class MapboxMap implements IVisual {
             // @ts-ignore
             mapboxgl.accessToken = this.settings.api.accessToken;
         }
-
-        mapboxgl.setRTLTextPlugin(
-            'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-            null,
-            true // Lazy load the plugin
-        );
 
         let style = this.settings.api.style == 'custom' ? this.settings.api.styleUrl : this.settings.api.style;
         if (this.mapStyle == '' || this.mapStyle != style) {
